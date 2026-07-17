@@ -1,0 +1,9 @@
+/* ============================================================
+   SEARCH PAGE
+   ============================================================ */
+.search-page-form { display: flex; max-width: 32rem; margin-bottom: 50px; }
+.search-page-form input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--hairline); border-right: none; padding: 14px 16px; color: var(--text-primary); outline: none; font-size: 14px; }
+.search-page-form button { padding: 14px 22px; background: var(--gold); border: none; color: var(--bg); cursor: pointer; }
+.search-result-count { color: var(--text-tertiary); font-size: 13px; margin-bottom: 30px; }
+.search-other-results { margin-top: 60px; padding-top: 32px; border-top: 1px solid var(--hairline); }
+.search-other-results h3 { font-size: 22px; }

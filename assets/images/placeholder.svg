@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+  <rect width="600" height="800" fill="#141414"/>
+  <g opacity="0.25" stroke="#c0c0c0" stroke-width="1.5" fill="none">
+    <circle cx="300" cy="400" r="120"/>
+    <path d="M210 400 L390 400 M300 310 L300 490"/>
+  </g>
+  <text x="300" y="650" text-anchor="middle" font-family="serif" font-size="22" fill="#c0c0c0" opacity="0.4">NOXR</text>
+</svg>

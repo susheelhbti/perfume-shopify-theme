@@ -1,0 +1,14 @@
+/* ============================================================
+   BLOG LISTING
+   ============================================================ */
+.blog-grid { display: grid; grid-template-columns: 1fr; gap: 50px; }
+@media (min-width: 768px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .blog-grid { grid-template-columns: repeat(3, 1fr); } }
+.blog-card-image { display: block; aspect-ratio: 4/3; overflow: hidden; background: var(--bg-raised); }
+.blog-card-image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.2); transition: transform 0.5s var(--ease), filter 0.5s var(--ease); }
+.blog-card:hover .blog-card-image img { transform: scale(1.04); filter: grayscale(0); }
+.blog-card-info { padding-top: 18px; }
+.blog-card-date { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); }
+.blog-card-title { display: block; font-family: var(--font-display); font-size: 22px; margin-top: 8px; text-decoration: none; color: var(--text-primary); }
+.blog-card-excerpt { font-size: 14px; margin-top: 10px; line-height: 1.6; }
+.blog-card-readmore { display: inline-block; margin-top: 14px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); text-decoration: none; }

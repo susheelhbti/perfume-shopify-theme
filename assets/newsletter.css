@@ -1,0 +1,9 @@
+/* ============================================================
+   NEWSLETTER
+   ============================================================ */
+.newsletter-section { text-align: center; padding: 100px 0; position: relative; overflow: hidden; width: 100%; }
+.newsletter-section .glow-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(198,165,107,0.06) 0%, transparent 70%); }
+.newsletter-section h2 { position: relative; }
+.newsletter-section h2 em { color: var(--gold); font-style: normal; }
+.newsletter-section > .container > p { font-size: 14px; color: var(--text-tertiary); margin-top: 14px; position: relative; }
+/* Shared .newsletter-input-group / success / error styles live in main-password.css and are reused here */

@@ -1,0 +1,10 @@
+/* ============================================================
+   BLOG / ARTICLE
+   ============================================================ */
+.article-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; }
+.article-tags a { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--hairline-gold); padding: 5px 14px; text-decoration: none; }
+.article-comments { margin-top: 50px; padding-top: 32px; border-top: 1px solid var(--hairline); }
+.article-comments h2 { font-size: 22px; margin-bottom: 18px; }
+.article-comment { margin-bottom: 18px; font-size: 14px; color: var(--text-secondary); }
+.article-comments form { display: flex; flex-direction: column; gap: 12px; margin-top: 22px; max-width: 28rem; }
+.article-comments input, .article-comments textarea { background: rgba(255,255,255,0.04); border: 1px solid var(--hairline); color: var(--text-primary); padding: 12px 14px; font-size: 13px; outline: none; }

@@ -1,0 +1,38 @@
+/* ============================================================
+   DISCOUNT POPUP
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s var(--ease);
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: linear-gradient(160deg, var(--bg-raised), var(--bg)); border: 1px solid var(--hairline-gold);
+  padding: 56px 40px; max-width: 440px; width: 90%; text-align: center; position: relative;
+  transform: scale(0.95); transition: transform 0.4s var(--ease);
+}
+.modal-overlay.active .modal-box { transform: scale(1); }
+.modal-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: var(--text-tertiary); font-size: 18px; cursor: pointer; transition: color 0.3s var(--ease); }
+.modal-close:hover { color: var(--text-primary); }
+.modal-box .icon-big { font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+.modal-box h3 { font-size: 32px; margin-bottom: 10px; }
+.modal-box h3 em { font-style: normal; color: var(--gold); }
+.modal-box p { font-size: 13px; margin-bottom: 28px; }
+.modal-input-group { display: flex; gap: 0; overflow: hidden; }
+.modal-input-group input {
+  flex: 1; padding: 14px 16px; background: rgba(255,255,255,0.04); border: 1px solid var(--hairline);
+  border-right: none; color: var(--text-primary); font-size: 13px; outline: none;
+}
+.modal-input-group input:focus { border-color: var(--gold-dim); }
+.modal-input-group button {
+  padding: 14px 24px; background: var(--gold); color: var(--bg); border: none;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: background 0.3s var(--ease);
+}
+.modal-input-group button:hover { background: #d8b87f; }
+.modal-box .skip-link {
+  display: inline-block; margin-top: 22px; color: var(--text-tertiary); font-size: 12px;
+  text-decoration: none; letter-spacing: 0.08em; transition: color 0.3s var(--ease); cursor: pointer; background: none; border: none;
+}
+.modal-box .skip-link:hover { color: var(--text-secondary); }
+.modal-box .modal-error { font-size: 12px; color: #d47a8a; margin-top: 12px; display: none; }
+.modal-box .modal-error.visible { display: block; }

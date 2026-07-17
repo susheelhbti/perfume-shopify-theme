@@ -1,0 +1,192 @@
+/* ============================================================
+   PRODUCT RECOMMENDATIONS
+   ============================================================ */
+.pd-related-section { padding: 0 0 100px; position: relative; }
+.pd-related {
+  margin-top: 80px;
+  padding-top: 60px;
+  border-top: 1px solid var(--hairline);
+  position: relative;
+}
+.pd-related::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+.pd-related h3 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin-bottom: 40px;
+  color: var(--text-primary);
+  position: relative;
+  display: inline-block;
+}
+.pd-related h3 em { color: var(--gold); font-style: normal; position: relative; }
+.pd-related h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: 0.3;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+.pd-related:hover h3::after { transform: scaleX(1); }
+.pd-related .product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px var(--gutter);
+  margin-top: 0;
+}
+.pd-related .product-card {
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.pd-related .product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+.pd-related .product-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: border-color 0.4s var(--ease);
+}
+.pd-related .product-card:hover::after {
+  border-color: rgba(198, 165, 107, 0.2);
+}
+.pd-related-empty { text-align: center; padding: 40px 0; color: var(--text-tertiary); font-size: 15px; }
+.pd-related-empty p { max-width: 400px; margin: 0 auto; }
+.pd-related-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 16px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.pd-related-loading .loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@media (max-width: 1024px) {
+  .pd-related .product-grid { grid-template-columns: repeat(2, 1fr); gap: 24px var(--gutter); }
+  .pd-related { margin-top: 60px; padding-top: 40px; }
+  .pd-related h3 { font-size: clamp(26px, 3.5vw, 32px); }
+}
+@media (max-width: 700px) {
+  .pd-related-section { padding: 0 0 60px; }
+  .pd-related { margin-top: 40px; padding-top: 32px; }
+  .pd-related .product-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .pd-related h3 { font-size: clamp(22px, 5vw, 28px); margin-bottom: 28px; }
+  .pd-related h3::after { display: none; }
+  .pd-related::before { width: 40px; }
+}
+@media (max-width: 480px) {
+  .pd-related .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pd-related { margin-top: 28px; padding-top: 24px; }
+  .pd-related h3 { font-size: 20px; margin-bottom: 20px; }
+  .pd-related-section { padding: 0 0 40px; }
+}
+.pd-related .product-card .product-title { font-size: 15px; transition: color 0.3s var(--ease); }
+.pd-related .product-card:hover .product-title { color: var(--gold); }
+.pd-related .product-card .product-price { font-size: 14px; transition: color 0.3s var(--ease); }
+.pd-related .product-card:hover .product-price { color: var(--text-secondary); }
+.pd-related .product-card .product-image img {
+  transition: transform 0.6s var(--ease), filter 0.4s var(--ease);
+}
+.pd-related .product-card:hover .product-image img { transform: scale(1.04); filter: brightness(1.05); }
+.pd-related .product-card .quick-add-btn {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.pd-related .product-card:hover .quick-add-btn { opacity: 1; transform: translateY(0); }
+.pd-related-scroll-hint {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 32px;
+  opacity: 0.3;
+}
+.pd-related-scroll-hint span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.pd-related-scroll-hint span:nth-child(2) { animation-delay: 0.3s; }
+.pd-related-scroll-hint span:nth-child(3) { animation-delay: 0.6s; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+.pd-related .product-grid .product-card {
+  background: var(--bg-raised, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0 0 20px 0;
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.pd-related .product-grid .product-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--hairline-gold);
+}
+.pd-related .product-grid .product-card .product-image {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+.pd-related .product-grid .product-card .product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pd-related .product-grid .product-card .product-info {
+  padding: 16px 18px 8px;
+  text-align: center;
+}
+.pd-related .product-grid .product-card .product-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  display: block;
+  text-decoration: none;
+}
+.pd-related .product-grid .product-card .product-price {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.pd-related .product-grid .product-card .product-price .compare {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+  margin-right: 8px;
+}
+.pd-related .product-grid .product-card .product-price .sale {
+  color: var(--gold);
+}

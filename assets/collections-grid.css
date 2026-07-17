@@ -1,0 +1,55 @@
+/* ============================================================
+   COLLECTIONS GRID (base fallback — the section itself also
+   ships its own scoped <style> block per-instance)
+   ============================================================ */
+.collections-grid {
+  display: grid; grid-template-columns: 0.85fr 1.3fr 0.85fr; gap: 1px;
+  background: var(--hairline); border: 1px solid var(--hairline); perspective: 1600px;
+}
+.collection-card {
+  background: radial-gradient(ellipse 120% 80% at 50% 100%, rgba(198,165,107,0.08), transparent 60%), linear-gradient(165deg, #111111, #050505 70%);
+  position: relative; min-height: 560px; padding: 48px 36px;
+  display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;
+  transition: background 0.5s var(--ease), transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(0px);
+  will-change: transform;
+  background-size: cover; background-position: center;
+}
+.collection-card.is-signature {
+  min-height: 640px; align-self: center;
+  background: radial-gradient(ellipse 130% 90% at 50% 100%, rgba(198,165,107,0.14), transparent 65%), linear-gradient(165deg, #141210, #050505 70%);
+}
+.collection-card:hover { transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(18px); box-shadow: 0 30px 60px rgba(0,0,0,0.45); }
+.collection-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: var(--card-tint, radial-gradient(circle at 50% 20%, rgba(255,255,255,0.05), transparent 60%));
+  opacity: 0.6; transition: opacity 0.5s var(--ease);
+}
+.collection-card:hover::before { opacity: 1; }
+.collection-card:hover { background-color: var(--bg-raised); }
+.collection-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255,255,255,0.07), transparent 45%);
+  opacity: 0; transition: opacity 0.4s var(--ease); pointer-events: none;
+}
+.collection-card:hover::after { opacity: 1; }
+@media (max-width: 900px), (hover: none) {
+  .collection-card { transform: none !important; }
+  .collection-card:hover { transform: none !important; box-shadow: none; }
+}
+.collection-num { position: absolute; top: 36px; left: 36px; font-family: var(--font-display); font-size: 13px; letter-spacing: 0.2em; color: var(--gold-dim); z-index: 1; }
+.collection-tier { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 14px; position: relative; z-index: 1; }
+.collection-card h3 { margin-bottom: 14px; position: relative; z-index: 1; }
+.collection-card p { max-width: 280px; margin-bottom: 24px; position: relative; z-index: 1; }
+.collection-price { font-family: var(--font-display); color: var(--gold); font-size: 18px; margin-bottom: 22px; position: relative; z-index: 1; }
+.collection-link {
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; display: inline-flex;
+  align-items: center; gap: 10px; position: relative; z-index: 1; width: fit-content;
+}
+.collection-link svg { width: 14px; height: 14px; transition: transform 0.35s var(--ease); }
+.collection-card:hover .collection-link svg { transform: translateX(6px); }
+@media (max-width: 900px) {
+  .collections-grid { grid-template-columns: 1fr; }
+  .collection-card, .collection-card.is-signature { min-height: 420px; }
+}

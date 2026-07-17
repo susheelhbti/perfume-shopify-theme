@@ -1,0 +1,6 @@
+/* ============================================================
+   404 PAGE
+   ============================================================ */
+.not-found-page { text-align: center;   }
+.not-found-page .legal-title { font-size: 90px; font-family: var(--font-display); color: var(--gold); }
+.not-found-page p { max-width: 32rem; margin: 18px auto 0; }

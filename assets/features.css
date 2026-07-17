@@ -1,0 +1,14 @@
+/* ============================================================
+   FEATURES (trust strip)
+   ============================================================ */
+.features-section { border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.features-grid { display: grid; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+.feature-item { padding: 56px 36px; text-align: center; }
+@media (min-width: 768px) {
+  .feature-item:not(:last-child) { border-right: 1px solid var(--hairline); }
+}
+.feature-item .feature-title {
+  font-family: var(--font-display); font-size: 18px; color: var(--gold); margin-bottom: 8px;
+}
+.feature-item p { font-size: 13px; }
