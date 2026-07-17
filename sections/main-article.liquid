@@ -1,0 +1,68 @@
+<div class="legal-wrapper article-page" {{ section.shopify_attributes }}>
+  {{ 'main-article.css' | asset_url | stylesheet_tag }}
+  {% render 'breadcrumbs' %}
+
+  <span class="legal-eyebrow">{{ article.blog.title }}</span>
+  <h1 class="legal-title">{{ article.title }}</h1>
+  <div class="legal-updated">
+    {{ article.published_at | date: '%B %-d, %Y' }}{% if article.author != blank %} &middot; By {{ article.author }}{% endif %}
+  </div>
+
+  {%- if article.image -%}
+    <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | default: article.title | escape }}" style="width: 100%; margin-bottom: 2rem;" loading="eager">
+  {%- endif -%}
+
+  <div class="legal-section">
+    {{ article.content }}
+  </div>
+
+  {%- if section.settings.show_tags and article.tags.size > 0 -%}
+    <div class="article-tags">
+      {%- for tag in article.tags -%}
+        <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_comments and blog.comments_enabled? -%}
+    <div class="article-comments">
+      <h2>Comments ({{ article.comments_count }})</h2>
+      {%- for comment in article.comments -%}
+        <div class="article-comment">
+          <strong>{{ comment.author }}</strong>
+          <p>{{ comment.content }}</p>
+        </div>
+      {%- endfor -%}
+
+      {%- form 'new_comment', article -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-success visible">Thanks for your comment!</p>
+        {%- endif -%}
+        <input type="text" name="comment[author]" placeholder="Name" required>
+        <input type="email" name="comment[email]" placeholder="Email" required>
+        <textarea name="comment[body]" rows="4" placeholder="Your comment" required></textarea>
+        <button type="submit" class="btn">Post Comment</button>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tags",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "Show comments",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

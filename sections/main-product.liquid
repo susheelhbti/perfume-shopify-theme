@@ -1,0 +1,263 @@
+{%- comment -%}
+  MAIN PRODUCT - Minimal Alpine.js Version
+  ========================================
+  Features: Variant picker, quantity, add to cart, sticky bar
+  All JavaScript logic is in theme.js via Alpine component "productDetail"
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign share_url = shop.url | append: product.url
+-%}
+
+<div class="product-page"
+     data-product-root
+     data-product-id="{{ product.id }}"
+     data-variants="{{ product.variants | json | escape }}">
+
+  {{ 'main-product.css' | asset_url | stylesheet_tag }}
+
+  <!-- Product Visual -->
+  <div class="product-visual">
+    <div class="product-visual-stack{% if product.media.size <= 1 %} is-single{% endif %}">
+      {%- for media in product.media -%}
+        <div class="product-visual-frame">
+          <img
+            class="product-visual-image"
+            src="{{ media.preview_image | image_url: width: 800 }}"
+            srcset="{{ media.preview_image | image_url: width: 600 }} 600w,
+                    {{ media.preview_image | image_url: width: 800 }} 800w,
+                    {{ media.preview_image | image_url: width: 1200 }} 1200w"
+            sizes="(min-width: 900px) 50vw, 100vw"
+            alt="{{ media.alt | default: product.title | escape }}"
+            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            width="{{ media.preview_image.width }}"
+            height="{{ media.preview_image.height }}"
+          >
+        </div>
+      {%- else -%}
+        <div class="product-visual-frame">
+          {{ 'product-1' | placeholder_svg_tag: 'product-visual-image' }}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info" x-data="productDetail()" x-init="init()">
+    
+    <!-- Title -->
+    <span class="collection-tier">{{ product.collections.first.title | default: product.type }}</span>
+    <h1 class="product-title">{{ product.title }}</h1>
+
+    <!-- Price -->
+    <div class="product-price-lg">
+      <span data-price>{{ current_variant.price | money_with_currency }}</span>
+      <span class="compare-price" data-compare-price style="{% unless current_variant.compare_at_price > current_variant.price %}display:none;{% endunless %}">
+        {{ current_variant.compare_at_price | money_with_currency }}
+      </span>
+      <span class="save-badge" data-save-badge style="{% unless current_variant.compare_at_price > current_variant.price %}display:none;{% endunless %}">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          {{ 'products.product.save' | t }} {{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round }}%
+        {%- endif -%}
+      </span>
+    </div>
+
+    <!-- Variant Picker -->
+    {%- if product.has_only_default_variant == false -%}
+      <div class="attr-block">
+        {%- for option in product.options_with_values -%}
+          <h4>{{ option.name }}</h4>
+          <div class="size-options">
+            {%- for value in option.values -%}
+              <button 
+                type="button" 
+                class="size-pill"
+                :class="{ 'is-active': selectedOptions[{{ forloop.parentloop.index0 }}] === '{{ value | escape }}' }"
+                @click="selectOption({{ forloop.parentloop.index0 }}, '{{ value | escape }}')">
+                {{ value }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Buy Buttons -->
+    <div class="product-actions">
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="id" data-variant-id-input value="{{ current_variant.id }}">
+        <div class="product-qty-row">
+          <div class="pd-qty">
+            <button type="button" @click="decrementQty()">&minus;</button>
+            <input type="text" x-model="quantity" readonly>
+            <button type="button" @click="incrementQty()">+</button>
+          </div>
+          <button
+            type="button"
+            class="btn btn-gold btn-block"
+            data-add-button
+            @click="addToCart()"
+            :disabled="!selectedVariant || !selectedVariant.available">
+            <span data-add-button-text>
+              {%- if current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+        </div>
+        <p class="pd-form-error"></p>
+      </form>
+    </div>
+
+    <!-- Accordion: Description -->
+    <div class="attr-block" style="padding-bottom:0;">
+      {%- if product.description != blank -%}
+        <div class="pd-accordion-item" x-data="{ open: false }">
+          <button type="button" class="pd-accordion-trigger" @click="open = !open" :class="{ 'open': open }">
+            <span>{{ 'products.product.description' | t | default: 'Description' }}</span>
+            <i class="fa-solid fa-plus" :class="{ 'fa-rotate-45': open }"></i>
+          </button>
+          <div class="pd-accordion-panel" :style="{ maxHeight: open ? '500px' : '0px' }">
+            <div class="pd-accordion-panel-inner">{{ product.description }}</div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="pd-accordion-item" x-data="{ open: false }">
+        <button type="button" class="pd-accordion-trigger" @click="open = !open" :class="{ 'open': open }">
+          <span>{{ 'products.product.shipping_returns' | t | default: 'Shipping & Returns' }}</span>
+          <i class="fa-solid fa-plus" :class="{ 'fa-rotate-45': open }"></i>
+        </button>
+        <div class="pd-accordion-panel" :style="{ maxHeight: open ? '500px' : '0px' }">
+          <div class="pd-accordion-panel-inner">
+            <p>{{ 'products.product.shipping_returns_text' | t | default: 'Free shipping on orders over $150. Unopened items may be returned within 14 days of delivery.' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pd-accordion-item" x-data="{ open: false }">
+        <button type="button" class="pd-accordion-trigger" @click="open = !open" :class="{ 'open': open }">
+          <span>{{ 'products.product.care_instructions' | t | default: 'Care Instructions' }}</span>
+          <i class="fa-solid fa-plus" :class="{ 'fa-rotate-45': open }"></i>
+        </button>
+        <div class="pd-accordion-panel" :style="{ maxHeight: open ? '500px' : '0px' }">
+          <div class="pd-accordion-panel-inner">
+            <p>{{ 'products.product.care_instructions_text' | t | default: 'Keep in a cool, dark place away from direct sunlight. Properly stored, pure oils can last for years.' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share -->
+    <div class="attr-block share-block">
+      <h4>{{ 'products.product.share' | t | default: 'Share' }}</h4>
+      <div class="share-icons">
+        <a class="share-icon" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ share_url | url_encode }}">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a class="share-icon" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url={{ share_url | url_encode }}">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a class="share-icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/button/?url={{ share_url | url_encode }}&media={{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | url_encode }}">
+          <i class="fa-brands fa-pinterest-p"></i>
+        </a>
+        <button type="button" class="share-icon" data-copy-link>
+          <i class="fa-solid fa-link"></i>
+        </button>
+      </div>
+      <p class="share-copied" data-copy-feedback>{{ 'products.product.link_copied' | t | default: 'Link copied' }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky Bar -->
+<div class="pd-sticky-bar" 
+     x-data="{ visible: false }" 
+     x-init="() => {
+       const observer = new IntersectionObserver((entries) => {
+         visible = !entries[0].isIntersecting;
+       }, { rootMargin: '-120px 0px 0px 0px' });
+       observer.observe(document.querySelector('.product-info'));
+     }" 
+     :class="{ 'visible': visible }">
+  <div class="pd-sticky-info">
+    <div class="pd-sticky-name">{{ product.title }}</div>
+    <div class="pd-sticky-price" data-sticky-price>{{ current_variant.price | money_with_currency }}</div>
+  </div>
+  <button type="button" class="btn btn-gold" @click="addToCart()">{{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}</button>
+</div>
+
+<!-- Copy Link Script (minimal) -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-copy-link]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const url = window.location.href;
+        const feedback = document.querySelector('[data-copy-feedback]');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => {
+            if (feedback) feedback.classList.add('visible');
+            setTimeout(() => { if (feedback) feedback.classList.remove('visible'); }, 1800);
+          });
+        } else {
+          const temp = document.createElement('textarea');
+          temp.value = url;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+          if (feedback) feedback.classList.add('visible');
+          setTimeout(() => { if (feedback) feedback.classList.remove('visible'); }, 1800);
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Main product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🔧 General"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_tier",
+      "label": "Show collection tier",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_variant_picker",
+      "label": "Show variant picker",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity_selector",
+      "label": "Show quantity selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sticky_bar",
+      "label": "Show sticky add-to-cart bar",
+      "default": true
+    }
+  ],
+  "blocks": [
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "Main product",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

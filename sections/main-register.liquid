@@ -1,0 +1,35 @@
+<div class="legal-wrapper auth-page" {{ section.shopify_attributes }}>
+  <span class="legal-eyebrow">Account</span>
+  <h1 class="legal-title">Create Account</h1>
+
+  <div class="auth-form-wrap">
+    {%- form 'create_customer' -%}
+      {%- if form.errors -%}
+        <div class="auth-error">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <label for="FirstName">First name</label>
+      <input type="text" name="customer[first_name]" id="FirstName" autocomplete="given-name">
+
+      <label for="LastName">Last name</label>
+      <input type="text" name="customer[last_name]" id="LastName" autocomplete="family-name">
+
+      <label for="Email">Email</label>
+      <input type="email" name="customer[email]" id="Email" autocomplete="email" required>
+
+      <label for="CreatePassword">Password</label>
+      <input type="password" name="customer[password]" id="CreatePassword" autocomplete="new-password" required>
+
+      <button type="submit" class="btn btn-gold btn-block">Create Account</button>
+    {%- endform -%}
+
+    <p class="auth-footer-link">Already have an account? <a href="{{ routes.account_login_url }}">Log in</a></p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": []
+}
+{% endschema %}

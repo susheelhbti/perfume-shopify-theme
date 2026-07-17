@@ -1,0 +1,146 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "Search…",
+      "no_results": "No results found for “{{ terms }}”.",
+      "results_count": "{{ count }} results found"
+    },
+    "newsletter": {
+      "success": "Thank you for joining the Inner Circle!",
+      "error_invalid_email": "Please enter a valid email address.",
+      "error_generic": "Something went wrong. Please try again."
+    },
+    "404": {
+      "title": "404",
+      "message": "The page you're looking for has drifted off like a fading scent. Let's get you back to the collection.",
+      "link": "Return Home"
+    },
+    "password_page": {
+      "login_form_heading": "Store owner login",
+      "coming_soon": "Coming Soon"
+    },
+    "breadcrumbs": {
+      "home": "Home"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Bag",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "sale": "Sale",
+      "bestseller": "Bestseller",
+      "new": "New",
+      "quantity": "Quantity",
+      "size": "Size",
+      "top_notes": "Top Notes",
+      "heart_notes": "Heart Notes",
+      "base_notes": "Base Notes",
+      "shipping_returns": "Shipping & Returns",
+      "care_instructions": "Care Instructions",
+      "you_may_also_like": "You May Also Like",
+      "related_products": "You May Also Like",
+      "description": "Description",
+      "share": "Share",
+      "save": "Save {{ percentage }}%",
+      "link_copied": "Link copied",
+      "shipping_returns_text": "Free shipping on orders over $150. Unopened items may be returned within 14 days of delivery.",
+      "care_instructions_text": "Keep in a cool, dark place away from direct sunlight. Properly stored, pure oils can last for years.",
+      "unit_price": "Unit price",
+      "in_stock": "In stock",
+      "out_of_stock": "Out of stock",
+      "only_few_left": "Only a few left!",
+      "reviews": "reviews"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Bag",
+      "empty": "Your bag is currently empty.",
+      "continue_shopping": "Continue Shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "shipping_taxes_note": "Shipping & taxes calculated at checkout.",
+      "free_shipping_remaining": "You're {{ amount }} away from free shipping.",
+      "free_shipping_unlocked": "You've unlocked free shipping!",
+      "order_note": "Order Note",
+      "view_bag": "View Bag",
+      "update": "Update Cart"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "My Account",
+      "welcome": "Welcome, {{ name }}",
+      "order_history": "Order History",
+      "no_orders": "You haven't placed any orders yet.",
+      "default_address": "Default Address",
+      "log_out": "Log Out",
+      "addresses": "Addresses"
+    },
+    "login": {
+      "title": "Log In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log In",
+      "forgot_password": "Forgot your password?",
+      "create_account": "Create an account",
+      "new_here": "New here?",
+      "guest_continue": "Continue as Guest"
+    },
+    "register": {
+      "title": "Create Account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create Account",
+      "already_have_account": "Already have an account?",
+      "log_in": "Log in"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "add_new": "Add New Address",
+      "save": "Save Address",
+      "delete": "Delete",
+      "delete_confirm": "Delete this address?",
+      "default_badge": "Default",
+      "no_addresses": "You have no saved addresses yet."
+    },
+    "order": {
+      "title": "Order Details",
+      "placed_on": "Placed on {{ date }}",
+      "shipping_address": "Shipping Address",
+      "billing_address": "Billing Address",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total": "Total",
+      "back_to_account": "Back to Account"
+    },
+    "reset_password": {
+      "title": "Reset Your Password",
+      "subtitle": "Enter a new password for {{ email }}.",
+      "new_password": "New password",
+      "confirm_password": "Confirm new password",
+      "submit": "Reset Password"
+    }
+  },
+  "blogs": {
+    "article": {
+      "comments_count": "Comments ({{ count }})",
+      "comment_form_name": "Name",
+      "comment_form_email": "Email",
+      "comment_form_body": "Your comment",
+      "comment_form_submit": "Post Comment",
+      "comment_success": "Thanks for your comment!",
+      "by_author": "By {{ author }}"
+    }
+  },
+  "discount_popup": {
+    "claim": "Claim",
+    "skip": "No thanks, continue browsing",
+    "thank_you": "Thank You",
+    "check_inbox": "Check your inbox for your discount code."
+  }
+}

@@ -1,0 +1,96 @@
+{%- if section.settings.enable -%}
+  {{ 'discount-popup.css' | asset_url | stylesheet_tag }}
+  
+  <div class="modal-overlay" 
+       id="discountModal"
+       x-data="{ open: false }"
+       x-init="setTimeout(() => { open = true }, 600)"
+       :class="{ 'active': open }"
+       @click.self="open = false">
+    
+    <div class="modal-box" 
+         x-show="open"
+         x-transition:enter.duration.400ms
+         x-transition:leave.duration.300ms>
+      
+      <button class="modal-close" @click="open = false" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+      
+      <div class="icon-big">{{ section.settings.eyebrow | default: 'A Gift, Before You Go' }}</div>
+      <h3>{{ section.settings.heading | default: 'Welcome to' }} <em>{{ shop.name }}</em></h3>
+      <p>{{ section.settings.body | default: 'Subscribe and get 15% off your first purchase. Rare scents await.' }}</p>
+      
+      <form class="modal-input-group" 
+            x-data="newsletter()"
+            @submit.prevent="submit()">
+        <input type="email" 
+               x-model="email" 
+               placeholder="Enter your email" 
+               required>
+        <button type="submit" id="modalSubscribe">Claim</button>
+      </form>
+      
+      <p class="modal-error" x-show="status === 'error'" x-text="message"></p>
+      
+      <button type="button" class="skip-link" @click="open = false">
+        No thanks, continue browsing &rarr;
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Store dismissal in sessionStorage
+    document.addEventListener('alpine:init', function() {
+      Alpine.store('discountPopup', {
+        dismissed: false,
+        init() {
+          try {
+            this.dismissed = sessionStorage.getItem('noxr_discount_modal_dismissed') === '1';
+          } catch(e) {}
+        },
+        dismiss() {
+          this.dismissed = true;
+          try {
+            sessionStorage.setItem('noxr_discount_modal_dismissed', '1');
+          } catch(e) {}
+        }
+      });
+    });
+  </script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Discount popup",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable popup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "A Gift, Before You Go"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading prefix",
+      "default": "Welcome to"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "Subscribe and get 15% off your first purchase. Rare scents await."
+    }
+  ]
+}
+{% endschema %}

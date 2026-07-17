@@ -1,0 +1,51 @@
+<footer class="site-footer" {{ section.shopify_attributes }}>
+  <div class="container">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <span class="footer-logo">
+          {%- if section.settings.logo != blank -%}
+            <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" loading="lazy">
+          {%- else -%}
+            {{ shop.name }}
+          {%- endif -%}
+        </span>
+        {%- if section.settings.tagline != blank -%}
+          <span class="footer-tagline">{{ section.settings.tagline }}</span>
+        {%- endif -%}
+      </div>
+
+      <nav class="footer-links">
+        {%- for link in section.settings.footer_menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+
+      <span class="footer-copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo image"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Made for memory."
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Footer menu",
+      "default": "footer"
+    }
+  ]
+}
+{% endschema %}

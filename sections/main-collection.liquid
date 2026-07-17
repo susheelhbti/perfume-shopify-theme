@@ -1,0 +1,87 @@
+<div class="page-wrapper collection-page" {{ section.shopify_attributes }}>
+  {{ 'main-collection.css' | asset_url | stylesheet_tag }}
+  {% render 'breadcrumbs' %}
+
+  <div style="text-align: left; margin-bottom: 1.5rem;">
+    <h1 class="legal-title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="legal-section" style="margin-top: 0.8rem;">{{ collection.description }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="filter-row">
+    <span>{{ collection.products_count }} {% if collection.products_count == 1 %}Product{% else %}Products{% endif %}</span>
+
+    {%- if section.settings.show_sort -%}
+      <label for="SortBy" class="sr-only">Sort by</label>
+      <select name="sort_by" id="SortBy" onchange="window.location.href = this.value;">
+        {%- assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-descending' | split: ',' -%}
+        {%- assign sort_labels = 'Featured,Best Selling,Alphabetically: A-Z,Alphabetically: Z-A,Price: Low to High,Price: High to Low,Newest' | split: ',' -%}
+        {%- for option in sort_options -%}
+          <option value="{{ collection.url }}?sort_by={{ option }}" {% if collection.sort_by == option or collection.default_sort_by == option and collection.sort_by == blank %}selected{% endif %}>
+            {{ sort_labels[forloop.index0] }}
+          </option>
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+  </div>
+
+  {%- if collection.products.size == 0 -%}
+    <div class="cart-empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <p>No products found in this collection yet.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn">Browse All Products</a>
+    </div>
+  {%- else -%}
+    <div class="catalog-grid">
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="collection-pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}">&larr; Prev</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {%- else -%}
+              <span class="{% if part.title == paginate.current_page %}current{% endif %}">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}">Next &rarr;</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection page",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sort dropdown",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,228 @@
+{% comment %}
+  ============================================================
+  PRODUCT CARD - Premium Design with Alpine.js
+  ============================================================
+  Features:
+  - Full image frame with hover zoom
+  - Hairline frame overlay
+  - Floating dot marker
+  - Frame tags (Sale, Bestseller, New, Limited)
+  - Quick actions (Add to Cart + Wishlist)
+  - Product meta with collection name
+  - Price with compare-at price
+  ============================================================
+{% endcomment %}
+
+{% liquid
+  assign card_product = product
+  assign featured_image = card_product.featured_image
+  assign show_rating = show_rating | default: false
+  assign show_collection = show_collection | default: true
+  assign show_quick_actions = show_quick_actions | default: true
+  assign show_tags = show_tags | default: true
+  assign button_text = button_text | default: 'Add to Cart'
+  assign image_size = image_size | default: '800'
+  assign card_class = card_class | default: ''
+%}
+
+{% unless card_product == blank %}
+  {% liquid
+    assign current_variant = card_product.selected_or_first_available_variant
+    assign compare_at_price = current_variant.compare_at_price | default: card_product.compare_at_price
+    assign price = current_variant.price | default: card_product.price
+    assign on_sale = false
+    if compare_at_price > price
+      assign on_sale = true
+    endif
+
+    assign is_available = current_variant.available
+    assign is_best_seller = false
+    assign is_new = false
+    assign is_limited = false
+
+    for tag in card_product.tags
+      assign tag_lower = tag | downcase
+      if tag_lower contains 'bestseller' or tag_lower contains 'best seller'
+        assign is_best_seller = true
+      elsif tag_lower contains 'new'
+        assign is_new = true
+      elsif tag_lower contains 'limited'
+        assign is_limited = true
+      endif
+    endfor
+
+    assign tag_content = ''
+    if on_sale
+      assign tag_content = 'Sale'
+    elsif is_best_seller
+      assign tag_content = 'Bestseller'
+    elsif is_new
+      assign tag_content = 'New'
+    elsif is_limited
+      assign tag_content = 'Limited'
+    elsif card_product.collections.first != blank
+      assign tag_content = card_product.collections.first.title
+    elsif card_product.type != blank
+      assign tag_content = card_product.type
+    endif
+
+    assign tag_class = ''
+    if on_sale
+      assign tag_class = 'sale'
+    elsif is_best_seller
+      assign tag_class = 'bestseller'
+    elsif is_new
+      assign tag_class = 'new'
+    elsif is_limited
+      assign tag_class = 'limited'
+    endif
+  %}
+
+  <div class="product-card-minimal {{ card_class }}"
+       x-data="{
+         productId: {{ card_product.id | json }},
+         variantId: {{ current_variant.id | json }},
+         added: false,
+         wishlist: false,
+         init() {
+           if (window.NOXR && window.NOXR.getWishlist) {
+             this.wishlist = window.NOXR.getWishlist().indexOf(String(this.productId)) !== -1;
+           }
+         },
+         addToCart() {
+           if (this.added) return;
+           this.added = true;
+           if (window.NOXR && window.NOXR.Cart) {
+             window.NOXR.Cart.add(this.variantId, 1)
+               .then((cart) => {
+                 if (window.NOXR.updateUI) window.NOXR.updateUI(cart);
+                 document.dispatchEvent(new Event('open-cart-drawer'));
+                 setTimeout(() => { this.added = false; }, 1600);
+               })
+               .catch(() => { this.added = false; });
+           }
+         },
+         toggleWishlist() {
+           if (window.NOXR && window.NOXR.toggleWishlist) {
+             this.wishlist = window.NOXR.toggleWishlist(this.productId);
+           }
+         }
+       }"
+       data-product-card
+       data-product-id="{{ card_product.id }}"
+       data-variant-id="{{ current_variant.id }}"
+       data-available="{{ is_available }}">
+
+    <div class="product-card-wrapper">
+      <div class="product-frame">
+        <a href="{{ card_product.url }}" class="product-link">
+          {% if featured_image %}
+            <img
+              class="frame-photo"
+              src="{{ featured_image | image_url: width: image_size }}"
+              srcset="{{ featured_image | image_url: width: 500 }} 500w,
+                      {{ featured_image | image_url: width: 800 }} 800w,
+                      {{ featured_image | image_url: width: 1100 }} 1100w"
+              sizes="(min-width: 1024px) 33vw, 50vw"
+              alt="{{ featured_image.alt | default: card_product.title | escape }}"
+              loading="lazy"
+              width="{{ featured_image.width }}"
+              height="{{ featured_image.height }}"
+            >
+          {% else %}
+            <div class="frame-photo-placeholder" aria-hidden="true">
+              <svg class="mini-bottle" viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="12" y="8" width="16" height="32" rx="2"/>
+                <rect x="16" y="6" width="8" height="4" rx="1"/>
+                <path d="M14 40 L26 40 L24 52 L16 52 L14 40Z"/>
+              </svg>
+            </div>
+          {% endif %}
+        </a>
+
+        <!-- Hairline Frame -->
+        <div class="hairline-frame"></div>
+        
+        <!-- Dot Marker -->
+        <div class="dot-marker"></div>
+
+        <!-- Frame Tag -->
+        {% if show_tags and tag_content != blank %}
+          <span class="frame-tag {% if tag_class != blank %}{{ tag_class }}{% endif %}"
+                role="status"
+                aria-label="{{ tag_content | escape }}">
+            {{ tag_content }}
+          </span>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        {% if show_quick_actions %}
+          <div class="quick-actions">
+            <form method="post" action="/cart/add" class="product-form product-form--overlay">
+              <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+              {% if is_available %}
+                <button type="submit"
+                        class="btn-quick btn-quick-add"
+                        @click.prevent="addToCart()"
+                        :disabled="added"
+                        :class="{ 'added': added }"
+                        aria-label="Add {{ card_product.title | escape }} to cart">
+                  <span class="btn-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M6 7h12l-1 13H7L6 7z"/>
+                      <path d="M9 7a3 3 0 0 1 6 0"/>
+                    </svg>
+                  </span>
+                  <span class="btn-label" x-text="added ? 'Added ✓' : '{{ button_text }}'"></span>
+                </button>
+              {% else %}
+                <button type="button"
+                        class="btn-quick btn-quick-sold-out"
+                        disabled
+                        aria-label="{{ card_product.title | escape }} is sold out">
+                  <span class="btn-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M6 7h12l-1 13H7L6 7z"/>
+                      <path d="M9 7a3 3 0 0 1 6 0"/>
+                    </svg>
+                  </span>
+                  <span class="btn-label">Sold Out</span>
+                </button>
+              {% endif %}
+            </form>
+
+            <!-- Wishlist Button -->
+            <button type="button"
+                    class="btn-quick-wishlist"
+                    :class="{ 'active': wishlist }"
+                    :aria-pressed="wishlist ? 'true' : 'false'"
+                    @click="toggleWishlist()"
+                    aria-label="Add {{ card_product.title | escape }} to wishlist">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Meta -->
+    <div class="product-meta-row">
+      <div class="product-meta-text">
+        <a href="{{ card_product.url }}" class="product-name">{{ card_product.title }}</a>
+        {% if show_collection and card_product.collections.first != blank %}
+          <div class="product-collection">{{ card_product.collections.first.title }}</div>
+        {% endif %}
+      </div>
+      <div class="product-price">
+        {% if compare_at_price > price %}
+          <span class="compare-price" aria-hidden="true">{{ compare_at_price | money }}</span>
+        {% endif %}
+        <span class="current-price">{{ price | money }}</span>
+      </div>
+    </div>
+  </div>
+
+{% endunless %}

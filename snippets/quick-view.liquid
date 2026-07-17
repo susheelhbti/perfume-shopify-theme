@@ -1,0 +1,130 @@
+{%- comment -%}
+  Quick View Modal
+  Usage: {% render 'quick-view', product: product %}
+{%- endcomment -%}
+
+<div class="quick-view-modal" data-quick-view data-product-id="{{ product.id }}">
+  <div class="quick-view-overlay" data-quick-close></div>
+  <div class="quick-view-panel">
+    <button class="quick-view-close" data-quick-close aria-label="Close quick view">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+    
+    <div class="quick-view-grid">
+      <div class="quick-view-image">
+        {% if product.featured_image %}
+          <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+        {% endif %}
+      </div>
+      <div class="quick-view-info">
+        <span class="collection-tier">{{ product.collections.first.title | default: product.type }}</span>
+        <h2>{{ product.title }}</h2>
+        <div class="product-price-lg">
+          <span data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+          {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+            <span class="compare-price">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+          {% endif %}
+        </div>
+        <p class="quick-view-description">{{ product.description | strip_html | truncate: 120 }}</p>
+        
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          {% if product.has_only_default_variant == false %}
+            <div class="attr-block">
+              {% for option in product.options_with_values %}
+                <h4>{{ option.name }}</h4>
+                <div class="size-options">
+                  {% for value in option.values %}
+                    <button type="button" class="size-pill {% if value == option.selected_value %}is-active{% endif %}" data-value="{{ value | escape }}">{{ value | escape }}</button>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          <button type="submit" class="btn btn-gold btn-block">Add to Bag</button>
+        </form>
+        
+        <a href="{{ product.url }}" class="quick-view-link">View Full Details &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.quick-view-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+.quick-view-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.quick-view-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+}
+.quick-view-panel {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  padding: 40px;
+}
+.quick-view-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.quick-view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.quick-view-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.quick-view-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.quick-view-description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.quick-view-link {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+}
+@media (max-width: 700px) {
+  .quick-view-grid { grid-template-columns: 1fr; }
+  .quick-view-panel { padding: 24px; }
+}
+</style>

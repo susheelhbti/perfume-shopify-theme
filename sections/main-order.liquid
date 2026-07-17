@@ -1,0 +1,73 @@
+<div class="legal-wrapper order-page" {{ section.shopify_attributes }}>
+  <a href="{{ routes.account_url }}" class="auth-link" style="margin-bottom: 1.5rem; display: inline-block;">&larr; Back to Account</a>
+
+  <span class="legal-eyebrow">Order {{ order.name }}</span>
+  <h1 class="legal-title">Order Details</h1>
+  <div class="legal-updated">Placed on {{ order.created_at | date: '%B %-d, %Y' }}</div>
+
+  <table class="account-orders-table">
+    <thead>
+      <tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+      {%- for line_item in order.line_items -%}
+        <tr>
+          <td>
+            <a href="{{ line_item.url }}">{{ line_item.title }}</a>
+            {%- unless line_item.variant.title == 'Default Title' -%}
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">{{ line_item.variant.title }}</div>
+            {%- endunless -%}
+          </td>
+          <td>{{ line_item.original_price | money }}</td>
+          <td>{{ line_item.quantity }}</td>
+          <td>{{ line_item.final_line_price | money }}</td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+
+  <div class="order-summary">
+    <div class="cart-summary-row"><span>Subtotal</span><span>{{ order.line_items_subtotal_price | money }}</span></div>
+    {%- for shipping_method in order.shipping_methods -%}
+      <div class="cart-summary-row"><span>Shipping ({{ shipping_method.title }})</span><span>{{ shipping_method.price | money }}</span></div>
+    {%- endfor -%}
+    {%- for tax_line in order.tax_lines -%}
+      <div class="cart-summary-row"><span>Tax</span><span>{{ tax_line.price | money }}</span></div>
+    {%- endfor -%}
+    <div class="cart-summary-row" style="font-size: 1.1rem; border-top: 1px solid rgba(192,192,192,0.15); padding-top: 0.6rem; margin-top: 0.6rem;">
+      <span>Total</span><span>{{ order.total_price | money }}</span>
+    </div>
+  </div>
+
+  <div class="order-addresses">
+    {%- if order.shipping_address -%}
+      <div>
+        <h2>Shipping Address</h2>
+        <p>
+          {{ order.shipping_address.name }}<br>
+          {{ order.shipping_address.address1 }}<br>
+          {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
+          {{ order.shipping_address.country }}
+        </p>
+      </div>
+    {%- endif -%}
+    {%- if order.billing_address -%}
+      <div>
+        <h2>Billing Address</h2>
+        <p>
+          {{ order.billing_address.name }}<br>
+          {{ order.billing_address.address1 }}<br>
+          {{ order.billing_address.city }}, {{ order.billing_address.province_code }} {{ order.billing_address.zip }}<br>
+          {{ order.billing_address.country }}
+        </p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Order",
+  "settings": []
+}
+{% endschema %}

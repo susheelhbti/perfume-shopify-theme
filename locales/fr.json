@@ -1,0 +1,166 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+
+
+{"general": {
+  "breadcrumbs": {
+    "home": "Accueil"
+  }
+},
+"products": {
+  "product": {
+    "description": "Description",
+    "share": "Partager",
+    "save": "Économisez {{ percentage }}%",
+    "link_copied": "Lien copié",
+    "shipping_returns_text": "Livraison gratuite pour les commandes de plus de 150 $. Les articles non ouverts peuvent être retournés dans les 14 jours suivant la livraison.",
+    "care_instructions_text": "Conserver dans un endroit frais et sombre, à l'abri de la lumière directe du soleil. Correctement stockés, les huiles pures peuvent durer des années.",
+    "unit_price": "Prix unitaire",
+    "in_stock": "En stock",
+    "out_of_stock": "Épuisé",
+    "only_few_left": "Plus que quelques-uns !",
+    "reviews": "avis"
+  }
+},
+"cart": {
+  "general": {
+    "update": "Mettre à Jour le Panier"
+  }
+},
+  "general": {
+    "search": {
+      "placeholder": "Rechercher…",
+      "no_results": "Aucun résultat trouvé pour \u201c{{ terms }}\u201d.",
+      "results_count": "{{ count }} résultats trouvés"
+    },
+    "newsletter": {
+      "success": "Merci de rejoindre le Cercle Privé !",
+      "error_invalid_email": "Merci de saisir une adresse e-mail valide.",
+      "error_generic": "Une erreur est survenue. Merci de réessayer."
+    },
+    "404": {
+      "title": "404",
+      "message": "La page que vous recherchez s'est évanouie comme un parfum. Retournons à la collection.",
+      "link": "Retour à l'Accueil"
+    },
+    "password_page": {
+      "login_form_heading": "Connexion du propriétaire de la boutique",
+      "coming_soon": "Bientôt Disponible"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au Sac",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "sale": "Promo",
+      "bestseller": "Meilleure Vente",
+      "new": "Nouveau",
+      "quantity": "Quantité",
+      "size": "Taille",
+      "top_notes": "Notes de Tête",
+      "heart_notes": "Notes de Cœur",
+      "base_notes": "Notes de Fond",
+      "shipping_returns": "Livraison & Retours",
+      "care_instructions": "Instructions d'Entretien",
+      "you_may_also_like": "Vous Aimerez Aussi",
+      "related_products": "Vous Aimerez Aussi"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Votre Sac",
+      "empty": "Votre sac est actuellement vide.",
+      "continue_shopping": "Continuer mes Achats",
+      "subtotal": "Sous-total",
+      "checkout": "Commander",
+      "shipping_taxes_note": "Frais de livraison et taxes calculés à la caisse.",
+      "free_shipping_remaining": "Plus que {{ amount }} pour la livraison gratuite.",
+      "free_shipping_unlocked": "Livraison gratuite débloquée !",
+      "order_note": "Note de Commande",
+      "view_bag": "Voir le Sac"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mon Compte",
+      "welcome": "Bienvenue, {{ name }}",
+      "order_history": "Historique des Commandes",
+      "no_orders": "Vous n'avez pas encore passé de commande.",
+      "default_address": "Adresse par Défaut",
+      "log_out": "Se Déconnecter",
+      "addresses": "Adresses"
+    },
+    "login": {
+      "title": "Connexion",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se Connecter",
+      "forgot_password": "Mot de passe oublié ?",
+      "create_account": "Créer un compte",
+      "new_here": "Nouveau ici ?",
+      "guest_continue": "Continuer en tant qu'Invité"
+    },
+    "register": {
+      "title": "Créer un Compte",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Créer un Compte",
+      "already_have_account": "Vous avez déjà un compte ?",
+      "log_in": "Se connecter"
+    },
+    "addresses": {
+      "title": "Adresses",
+      "add_new": "Ajouter une Nouvelle Adresse",
+      "save": "Enregistrer l'Adresse",
+      "delete": "Supprimer",
+      "delete_confirm": "Supprimer cette adresse ?",
+      "default_badge": "Par défaut",
+      "no_addresses": "Vous n'avez aucune adresse enregistrée."
+    },
+    "order": {
+      "title": "Détails de la Commande",
+      "placed_on": "Passée le {{ date }}",
+      "shipping_address": "Adresse de Livraison",
+      "billing_address": "Adresse de Facturation",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "tax": "Taxe",
+      "total": "Total",
+      "back_to_account": "Retour au Compte"
+    },
+    "reset_password": {
+      "title": "Réinitialiser votre Mot de Passe",
+      "subtitle": "Entrez un nouveau mot de passe pour {{ email }}.",
+      "new_password": "Nouveau mot de passe",
+      "confirm_password": "Confirmer le nouveau mot de passe",
+      "submit": "Réinitialiser le Mot de Passe"
+    }
+  },
+  "blogs": {
+    "article": {
+      "comments_count": "Commentaires ({{ count }})",
+      "comment_form_name": "Nom",
+      "comment_form_email": "E-mail",
+      "comment_form_body": "Votre commentaire",
+      "comment_form_submit": "Publier le Commentaire",
+      "comment_success": "Merci pour votre commentaire !",
+      "by_author": "Par {{ author }}"
+    }
+  },
+  "discount_popup": {
+    "claim": "Réclamer",
+    "skip": "Non merci, continuer la navigation",
+    "thank_you": "Merci",
+    "check_inbox": "Consultez votre boîte mail pour votre code de réduction."
+  }
+}

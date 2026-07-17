@@ -1,0 +1,101 @@
+<div class="legal-wrapper" {{ section.shopify_attributes }}>
+  <span class="legal-eyebrow">Support</span>
+  <h1 class="legal-title">{{ page.title | default: 'Shipping & FAQs' }}</h1>
+  <div class="legal-updated">{{ section.settings.subheading | default: 'Everything you need to know before your order arrives' }}</div>
+
+  {%- if section.settings.shipping_overview != blank -%}
+    <div class="legal-section">
+      <h2>Shipping Overview</h2>
+      {{ section.settings.shipping_overview }}
+    </div>
+  {%- endif -%}
+
+  {%- if page.content != blank -%}
+    <div class="legal-section">
+      {{ page.content }}
+    </div>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="legal-section" id="faqs">
+      <h2>Frequently Asked Questions</h2>
+      <div data-accordion-group data-accordion-exclusive="true">
+        {%- for block in section.blocks -%}
+          <div class="faq-item" {{ block.shopify_attributes }}>
+            <button class="faq-question" data-accordion-trigger>
+              <span>{{ block.settings.question }}</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Shipping & FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Everything you need to know before your order arrives"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_overview",
+      "label": "Shipping overview",
+      "default": "<p>All orders are carefully packaged to protect glass bottles in transit and ship within 1-2 business days of purchase.</p><ul><li>Domestic: 3-5 business days</li><li>International: 7-14 business days</li><li>Free shipping on orders over $150</li></ul>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long does shipping take?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Domestic orders typically arrive within 3-5 business days. International orders can take 7-14 business days depending on destination and customs processing."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shipping & FAQ",
+      "blocks": [
+        { "type": "faq" },
+        {
+          "type": "faq",
+          "settings": { "question": "Do you ship internationally?", "answer": "Yes, we ship to most countries worldwide. Shipping costs and delivery times are calculated at checkout based on your location." }
+        },
+        {
+          "type": "faq",
+          "settings": { "question": "How should I store my attar?", "answer": "Keep your attar in a cool, dark place away from direct sunlight. Properly stored, pure oils can last for years without losing their character." }
+        },
+        {
+          "type": "faq",
+          "settings": { "question": "Can I return an opened bottle?", "answer": "Due to the personal nature of fragrance, opened bottles cannot be returned. Unopened items may be returned within 14 days of delivery." }
+        },
+        {
+          "type": "faq",
+          "settings": { "question": "Do you offer samples?", "answer": "Yes — every order includes two complimentary 1ml samples of your choice, so you can explore the collection before committing to a full bottle." }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

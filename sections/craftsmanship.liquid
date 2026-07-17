@@ -1,0 +1,52 @@
+<section class="craft" {{ section.shopify_attributes }}>
+  {{ 'craftsmanship.css' | asset_url | stylesheet_tag }}
+  <div class="craft-photo" aria-hidden="true" style="{% if section.settings.image %}background-image: url('{{ section.settings.image | image_url: width: 1920 }}');{% endif %}"></div>
+  <div class="craft-overlay" aria-hidden="true"></div>
+  <div class="craft-inner reveal">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <p>{{ section.settings.body }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Craftsmanship",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background photo"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Craftsmanship"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Crafted to be <em>remembered.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "Every oil is composed in small batches, aged for depth, and bottled by hand — built to outlast the moment it was made for."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Craftsmanship"
+    }
+  ]
+}
+{% endschema %}

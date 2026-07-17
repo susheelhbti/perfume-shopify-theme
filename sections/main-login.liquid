@@ -1,0 +1,44 @@
+<div class="legal-wrapper auth-page" {{ section.shopify_attributes }}>
+  <span class="legal-eyebrow">Account</span>
+  <h1 class="legal-title">Log In</h1>
+
+  <div class="auth-form-wrap">
+    {%- form 'customer_login' -%}
+      {%- if form.errors -%}
+        <div class="auth-error">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <label for="CustomerEmail">Email</label>
+      <input type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" required>
+
+      {%- if form.password_needed -%}
+        <label for="CustomerPassword">Password</label>
+        <input type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password" required>
+      {%- endif -%}
+
+      <button type="submit" class="btn btn-gold btn-block">Log In</button>
+
+      {%- if form.password_needed -%}
+        <a href="{{ routes.account_recover_url }}" class="auth-link">Forgot your password?</a>
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if shop.checkout.guest_login -%}
+      <div class="auth-divider"><span>or</span></div>
+      {%- form 'guest_login' -%}
+        <button type="submit" class="btn btn-outline btn-block">Continue as Guest</button>
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- if shop.customer_accounts_enabled and shop.customer_accounts_optional -%}
+      <p class="auth-footer-link">New here? <a href="{{ routes.account_register_url }}">Create an account</a></p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Login",
+  "settings": []
+}
+{% endschema %}

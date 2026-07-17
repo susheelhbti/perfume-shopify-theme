@@ -1,0 +1,158 @@
+{%- comment -%}
+  ============================================================
+  MAIN CART (Enhanced with selection, wishlist, clear all)
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign threshold_cents = settings.free_shipping_threshold | times: 100
+  assign remaining_cents = threshold_cents | minus: cart.total_price
+  if remaining_cents < 0
+    assign remaining_cents = 0
+  endif
+-%}
+
+<div class="page-wrapper cart-page"
+     data-cart-root
+     data-money-format="{{ shop.money_format | escape }}"
+     {{ section.shopify_attributes }}>
+  
+  {% render 'breadcrumbs' %}
+
+  <h1 class="legal-title" style="margin-bottom: 2rem;">Your Bag</h1>
+
+  {%- if cart.item_count == 0 -%}
+    <div class="cart-empty-state">
+      <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+      <p>Your bag is currently empty.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn">Explore the Collection</a>
+    </div>
+  {%- else -%}
+    {%- if settings.free_shipping_enable -%}
+      <div class="cart-shipping-bar" data-shipping-bar data-threshold="{{ threshold_cents }}">
+        <p data-shipping-message>
+          {%- if remaining_cents > 0 -%}
+            You're {{ remaining_cents | money }} away from free shipping.
+          {%- else -%}
+            You've unlocked free shipping!
+          {%- endif -%}
+        </p>
+        <div class="cart-shipping-track">
+          <div class="cart-shipping-fill" data-shipping-fill style="width: {% if threshold_cents > 0 %}{{ cart.total_price | times: 100 | divided_by: threshold_cents | at_most: 100 }}{% else %}100{% endif %}%;"></div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <form action="{{ routes.cart_url }}" method="post" id="cartForm">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th class="cart-th-select"><span class="sr-only">Select</span></th>
+            <th class="cart-th-product">Product</th>
+            <th class="cart-th-price">Price</th>
+            <th class="cart-th-qty">Quantity</th>
+            <th class="cart-th-total">Total</th>
+            <th class="cart-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for item in cart.items -%}
+            <tr class="cart-row" data-cart-row data-line="{{ forloop.index }}">
+              <td class="cart-td-select">
+                <input type="checkbox"
+                       class="cart-item-select"
+                       data-line="{{ forloop.index }}"
+                       data-variant-id="{{ item.variant_id }}"
+                       data-product-id="{{ item.product_id }}"
+                       checked>
+              </td>
+              <td class="cart-td-product">
+                <a href="{{ item.url }}" class="cart-item-image">
+                  <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" loading="lazy">
+                </a>
+                <div>
+                  <a href="{{ item.url }}" class="cart-item-name">{{ item.product.title }}</a>
+                  {%- unless item.variant.title == 'Default Title' -%}
+                    <div class="cart-item-variant">{{ item.variant.title }}</div>
+                  {%- endunless -%}
+                </div>
+              </td>
+              <td class="cart-td-price">
+                {%- if item.original_price > item.final_price -%}
+                  <span class="cart-item-price-compare">{{ item.original_price | money }}</span>
+                {%- endif -%}
+                {{ item.final_price | money }}
+              </td>
+              <td class="cart-td-qty">
+                <div class="pd-qty" data-cart-qty>
+                  <button type="button" data-cart-minus aria-label="Decrease quantity">&minus;</button>
+                  <input type="number"
+                         name="updates[]"
+                         value="{{ item.quantity }}"
+                         data-cart-qty-input
+                         data-line="{{ forloop.index }}"
+                         min="0"
+                         inputmode="numeric"
+                         aria-label="Quantity for {{ item.product.title | escape }}">
+                  <button type="button" data-cart-plus aria-label="Increase quantity">+</button>
+                </div>
+              </td>
+              <td class="cart-td-total" data-line-total>{{ item.final_line_price | money }}</td>
+              <td class="cart-td-actions">
+                <button type="button"
+                        class="btn-wishlist-move"
+                        data-line="{{ forloop.index }}"
+                        data-product-id="{{ item.product_id }}"
+                        data-variant-id="{{ item.variant_id }}"
+                        aria-label="Move {{ item.product.title | escape }} to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i> Move to Wishlist
+                </button>
+                <a href="{{ item.url_to_remove }}" data-cart-remove data-line="{{ forloop.index }}" aria-label="Remove {{ item.product.title | escape }}">
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                </a>
+              </td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <div class="cart-footer-grid">
+        <div class="cart-note-field">
+          <label for="CartNote">Order Note</label>
+          <textarea name="note" id="CartNote" rows="3" data-cart-note placeholder="Add a note to your order...">{{ cart.note }}</textarea>
+        </div>
+        <div class="cart-summary" data-cart-summary>
+          <div class="cart-summary-row">
+            <span>Subtotal (all items)</span>
+            <span data-cart-subtotal>{{ cart.total_price | money }}</span>
+          </div>
+          <div class="cart-summary-row" style="border-top:1px solid var(--hairline); padding-top:0.6rem; margin-top:0.6rem;">
+            <span><strong>Selected Subtotal</strong></span>
+            <span data-selected-subtotal>{{ cart.total_price | money }}</span>
+          </div>
+          <p class="cart-summary-note">Shipping &amp; taxes calculated at checkout for selected items.</p>
+
+          <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <button type="button" class="btn btn-outline btn-block" data-clear-all>Clear All</button>
+          </div>
+
+          <!-- NEW: Checkout Selected button -->
+          <button type="button" class="btn btn-gold btn-block" data-checkout-selected>Checkout Selected</button>
+
+          <!-- Fallback: original checkout button (hidden with JS) -->
+          <button type="submit" name="checkout" class="btn btn-gold btn-block" id="checkoutAll" style="display:none;">Checkout All</button>
+
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline btn-block" style="margin-top: 0.8rem;">Continue Shopping</a>
+        </div>
+      </div>
+    </form>
+  {%- endif -%}
+</div>
+
+  
+{% schema %}
+{
+  "name": "Cart page",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,32 @@
+<!-- Page Section – Clean, inherits base styles, only container width -->
+<div class="article-wrapper" {{ section.shopify_attributes }}>
+  
+
+  <h1 class="article-title">{{ page.title }}</h1>
+
+
+  
+  <div class="article-section">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "page"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_updated_date",
+      "label": "Show last updated date",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page-faq",
+      "blocks": {
+        "faq-1": { "type": "faq", "settings": { "question": "How long does shipping take?", "answer": "Domestic orders typically arrive within 3-5 business days. International orders can take 7-14 business days depending on destination and customs processing." } },
+        "faq-2": { "type": "faq", "settings": { "question": "Do you ship internationally?", "answer": "Yes, we ship to most countries worldwide. Shipping costs and delivery times are calculated at checkout based on your location." } },
+        "faq-3": { "type": "faq", "settings": { "question": "How should I store my attar?", "answer": "Keep your attar in a cool, dark place away from direct sunlight. Properly stored, pure oils can last for years without losing their character." } },
+        "faq-4": { "type": "faq", "settings": { "question": "Can I return an opened bottle?", "answer": "Due to the personal nature of fragrance, opened bottles cannot be returned. Unopened items may be returned within 14 days of delivery." } },
+        "faq-5": { "type": "faq", "settings": { "question": "Do you offer samples?", "answer": "Yes — every order includes two complimentary 1ml samples of your choice, so you can explore the collection before committing to a full bottle." } }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3", "faq-4", "faq-5"],
+      "settings": {
+        "subheading": "Everything you need to know before your order arrives",
+        "shipping_overview": "<p>All orders are carefully packaged to protect glass bottles in transit and ship within 1-2 business days of purchase. Tracking information is emailed as soon as your order leaves our studio.</p><ul><li>Domestic: 3-5 business days</li><li>International: 7-14 business days</li><li>Free shipping on orders over $150</li></ul>"
+      }
+    }
+  },
+  "order": ["main"]
+}

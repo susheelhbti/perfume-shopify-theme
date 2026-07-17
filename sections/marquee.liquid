@@ -1,0 +1,102 @@
+ 
+
+
+<div class="marquee-strip" {{ section.shopify_attributes }}>
+  {{ 'marquee.css' | asset_url | stylesheet_tag }}
+  
+  <div class="marquee-wrapper">
+    <div class="marquee-inner" data-marquee-inner>
+      {%- for block in section.blocks -%}
+        <span class="marquee-item">
+          <span class="marquee-text">{{ block.settings.text }}</span>
+          <span class="marquee-dot">&bull;</span>
+        </span>
+      {%- endfor -%}
+      
+      <!-- Duplicate for seamless loop -->
+      {%- for block in section.blocks -%}
+        <span class="marquee-item">
+          <span class="marquee-text">{{ block.settings.text }}</span>
+          <span class="marquee-dot">&bull;</span>
+        </span>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{{ 'marquee.js' | asset_url | script_tag }}
+ 
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Marquee Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#c6a56b"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll Speed",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Pure Oud Distillate"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "settings": {
+        "background_color": "#0a0a0a",
+        "text_color": "#ffffff",
+        "accent_color": "#c6a56b",
+        "speed": 30
+      },
+      "blocks": [
+        { "type": "item", "settings": { "text": "Pure Oud Distillate" } },
+        { "type": "item", "settings": { "text": "Taif Rose Absolute" } },
+        { "type": "item", "settings": { "text": "Aged Amber Resin" } },
+        { "type": "item", "settings": { "text": "White Musk" } },
+        { "type": "item", "settings": { "text": "Sandalwood Oil" } },
+        { "type": "item", "settings": { "text": "Saffron Extract" } },
+        { "type": "item", "settings": { "text": "Jasmine Sambac" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

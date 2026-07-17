@@ -1,0 +1,57 @@
+<div class="page-wrapper blog-page" {{ section.shopify_attributes }}>
+  {{ 'main-blog.css' | asset_url | stylesheet_tag }}
+  {% render 'breadcrumbs' %}
+  <h1 class="legal-title" style="margin-bottom: 2rem;">{{ blog.title }}</h1>
+
+  {%- if blog.articles.size == 0 -%}
+    <p style="color: rgba(255,255,255,0.4);">No articles yet — check back soon.</p>
+  {%- else -%}
+    <div class="blog-grid">
+      {%- paginate blog.articles by section.settings.articles_per_page -%}
+        {%- for article in blog.articles -%}
+          <article class="blog-card">
+            <a href="{{ article.url }}" class="blog-card-image">
+              {%- if article.image -%}
+                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag }}
+              {%- endif -%}
+            </a>
+            <div class="blog-card-info">
+              <div class="blog-card-date">{{ article.published_at | date: '%B %-d, %Y' }}</div>
+              <a href="{{ article.url }}" class="blog-card-title">{{ article.title }}</a>
+              <p class="blog-card-excerpt">{{ article.excerpt_or_content | strip_html | truncate: 120 }}</p>
+              <a href="{{ article.url }}" class="blog-card-readmore">Read More &rarr;</a>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+
+    {%- paginate blog.articles by section.settings.articles_per_page -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="collection-pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&larr; Prev</a>{%- endif -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next &rarr;</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    }
+  ]
+}
+{% endschema %}

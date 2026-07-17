@@ -1,0 +1,23 @@
+<div class="page-wrapper not-found-page" {{ section.shopify_attributes }}>
+  {{ 'main-404.css' | asset_url | stylesheet_tag }}
+  <span class="eyebrow" style="display: block; text-align: center;">Lost</span>
+  <h1 class="legal-title">404</h1>
+  <p>
+    {{ section.settings.message | default: "The page you're looking for has drifted off like a fading scent. Let's get you back to the collection." }}
+  </p>
+  <a href="{{ routes.root_url }}" class="btn btn-gold" style="margin-top: 2rem;">Return Home</a>
+</div>
+
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "The page you're looking for has drifted off like a fading scent. Let's get you back to the collection."
+    }
+  ]
+}
+{% endschema %}

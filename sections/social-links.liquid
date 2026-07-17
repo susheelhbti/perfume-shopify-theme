@@ -1,0 +1,301 @@
+{%- comment -%}
+  ============================================================
+  SECTION: Social Links — sections/social-links.liquid  (NEW)
+  ============================================================
+  8 big Font Awesome tiles (Facebook, Instagram, X, YouTube,
+  LinkedIn, TikTok, WhatsApp, GitHub). White by default; on
+  hover the platform's brand color floods up from the bottom,
+  the icon pops and tilts, a "Follow →" label slides in, and
+  the tile lifts with a colored glow. Instagram gets its
+  gradient. Animated ticker strip on top (can be disabled).
+
+  Rendered on every page: theme.liquid calls
+    {% section 'social-links' %}
+  right above {% section 'footer' %}.
+
+  Swap the placeholder URLs in Theme Editor → Social Links,
+  or leave a URL blank to hide that tile.
+  ============================================================
+{%- endcomment -%}
+  
+
+<div class="sf-section" {{ section.shopify_attributes }}>
+
+ 
+  
+
+  <div class="container">
+    <div class="sf-head">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+
+    {%- assign p_keys   = 'instagram,x,linkedin,whatsapp' | split: ',' -%}
+    {%- assign p_labels = 'Instagram,X,LinkedIn,WhatsApp' | split: ',' -%}
+    {%- assign p_icons  = 'fa-instagram,fa-x-twitter,fa-linkedin-in,fa-whatsapp' | split: ',' -%}
+
+    <div class="sf-grid">
+      {%- for key in p_keys -%}
+        {%- assign i = forloop.index0 -%}
+        {%- assign url_key = 'url_' | append: key -%}
+        {%- assign url = section.settings[url_key] -%}
+        {%- if url != blank -%}
+          <a href="{{ url }}" class="sf-tile is-{{ key }}" target="_blank" rel="noopener"
+             aria-label="Follow us on {{ p_labels[i] }}">
+            <i class="fa-brands {{ p_icons[i] }} sf-icon" aria-hidden="true"></i>
+            <span class="sf-name">{{ p_labels[i] }}</span>
+            <span class="sf-follow">{{ section.settings.follow_text | default: 'Follow' }} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<style>
+
+  
+
+  /* ---- section frame (div, so base.css's global `section` padding doesn't apply) ---- */
+.sf-section {
+  padding: 90px 0 110px;
+  border-top: 1px solid var(--hairline);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.sf-head { margin-bottom: 48px; }
+.sf-head .eyebrow { display: block; margin-bottom: 16px; }
+
+/* ---- ticker strip ---- */
+.sf-ticker {
+  border-bottom: 1px solid var(--hairline);
+  margin: -90px 0 70px;   /* hug the section's top edge */
+  padding: 14px 0;
+  overflow: hidden;
+  background: rgba(255,255,255,0.01);
+}
+.sf-ticker-inner {
+  display: flex;
+  gap: 2.6rem;
+  width: max-content;
+  white-space: nowrap;
+  animation: sf-ticker-scroll 26s linear infinite;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.sf-ticker-dot { color: var(--gold); }
+@keyframes sf-ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- tile grid ---- */
+.sf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ---- tile: dark theme compliant ---- */
+.sf-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 190px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--hairline);
+  color: var(--text-primary);
+  border-radius: 2px;
+  overflow: hidden;
+  text-decoration: none;
+  transform: translateY(0);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  /* per-platform brand + glow set below */
+  --brand: #111111;
+  --glow: rgba(0, 0, 0, 0.35);
+}
+
+/* brand color floods up from the bottom */
+.sf-tile::before {
+  content: "";
+  position: absolute;
+  inset: -1px; /* cover the border */
+  background: var(--brand);
+  transform: translateY(101%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+  border-radius: 2px;
+}
+.sf-tile:hover::before,
+.sf-tile:focus-visible::before { transform: translateY(0); }
+
+.sf-tile:hover,
+.sf-tile:focus-visible {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 44px var(--glow);
+  border-color: transparent;
+}
+
+/* giant icon - starts with gold, becomes white over the flood */
+.sf-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 54px;
+  line-height: 1;
+  color: var(--gold);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.3s ease;
+}
+.sf-tile:hover .sf-icon,
+.sf-tile:focus-visible .sf-icon {
+  transform: scale(1.18) rotate(-8deg);
+  color: #ffffff;
+}
+
+.sf-name {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.3s ease, opacity 0.3s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sf-tile:hover .sf-name,
+.sf-tile:focus-visible .sf-name {
+  color: rgba(255,255,255,0.85);
+  transform: translateY(-4px);
+}
+
+/* "Follow →" slides in from the bottom */
+.sf-follow {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffffff;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease 0.08s,
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.sf-follow .fa-arrow-right { font-size: 10px; transition: transform 0.3s ease; }
+.sf-tile:hover .sf-follow,
+.sf-tile:focus-visible .sf-follow { opacity: 1; transform: translateY(0); }
+.sf-tile:hover .sf-follow .fa-arrow-right { transform: translateX(4px); }
+
+/* ---- brand colors + glows (keep these, they work with dark theme) ---- */
+.sf-tile.is-facebook  { --brand: #1877f2; --glow: rgba(24,119,242,0.4); }
+.sf-tile.is-x         { --brand: #0f1419; --glow: rgba(15,20,25,0.5); }
+.sf-tile.is-youtube   { --brand: #ff0000; --glow: rgba(255,0,0,0.35); }
+.sf-tile.is-linkedin  { --brand: #0a66c2; --glow: rgba(10,102,194,0.4); }
+.sf-tile.is-tiktok    { --brand: #010101; --glow: rgba(37,244,238,0.3); }
+.sf-tile.is-whatsapp  { --brand: #25d366; --glow: rgba(37,211,102,0.4); }
+.sf-tile.is-github    { --brand: #181717; --glow: rgba(24,23,23,0.5); }
+/* Instagram: signature gradient flood */
+.sf-tile.is-instagram { --glow: rgba(220,39,67,0.4); }
+.sf-tile.is-instagram::before {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 1024px) {
+  .sf-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .sf-tile { min-height: 160px; }
+  .sf-icon { font-size: 44px; }
+}
+@media (max-width: 760px) {
+  .sf-section { padding: 70px 0 80px; }
+  .sf-ticker { margin: -70px 0 50px; }
+  .sf-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sf-tile { min-height: 150px; }
+  .sf-head { margin-bottom: 36px; }
+}
+@media (max-width: 400px) {
+  .sf-icon { font-size: 38px; }
+  .sf-tile { min-height: 130px; }
+}
+
+/* ---- reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .sf-ticker-inner { animation: none; }
+  .sf-tile, .sf-tile::before, .sf-icon, .sf-name, .sf-follow {
+    transition: none !important;
+  }
+  .sf-tile:hover, .sf-tile:focus-visible { transform: none; }
+  .sf-tile:hover .sf-icon { transform: none; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Social Links",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Stay Close"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Follow the house"
+    },
+    {
+      "type": "text",
+      "id": "follow_text",
+      "label": "Hover label",
+      "default": "Follow"
+    },
+    {
+      "type": "header",
+      "content": "Ticker strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ticker",
+      "label": "Show animated ticker",
+      "default": true
+    },
+    
+    
+    {
+      "type": "header",
+      "content": "Profile URLs — leave blank to hide a tile"
+    },
+    { "type": "text", "id": "url_facebook",  "label": "Facebook",  "default": "https://facebook.com/yourpage" },
+    { "type": "text", "id": "url_instagram", "label": "Instagram", "default": "https://instagram.com/yourhandle" },
+    { "type": "text", "id": "url_x",         "label": "X (Twitter)", "default": "https://x.com/yourhandle" },
+    { "type": "text", "id": "url_youtube",   "label": "YouTube",   "default": "https://youtube.com/@yourchannel" },
+    { "type": "text", "id": "url_linkedin",  "label": "LinkedIn",  "default": "https://linkedin.com/company/yourcompany" },
+    { "type": "text", "id": "url_tiktok",    "label": "TikTok",    "default": "https://tiktok.com/@yourhandle" },
+    { "type": "text", "id": "url_whatsapp",  "label": "WhatsApp",  "default": "https://wa.me/911234567890" },
+    { "type": "text", "id": "url_github",    "label": "GitHub",    "default": "https://github.com/yourusername" }
+  ]
+}
+{% endschema %}

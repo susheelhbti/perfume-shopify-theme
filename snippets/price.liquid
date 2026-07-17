@@ -1,0 +1,23 @@
+{%- comment -%}
+  Renders price markup for a product or variant.
+  Usage: {% render 'price', product: product %}
+         {% render 'price', variant: variant %}
+{%- endcomment -%}
+
+{%- liquid
+  if variant
+    assign price_target = variant
+  else
+    assign price_target = product
+  endif
+
+  assign compare_price = price_target.compare_at_price
+  assign current_price = price_target.price
+-%}
+
+<span class="price-wrap">
+  {%- if compare_price > current_price -%}
+    <span class="compare-price" data-compare-price>{{ compare_price | money }}</span>
+  {%- endif -%}
+  <span class="current-price" data-price>{{ current_price | money }}</span>
+</span>

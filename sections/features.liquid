@@ -1,0 +1,60 @@
+<div class="features-section" {{ section.shopify_attributes }}>
+  <div class="container">
+    <div class="features-grid">
+      {%- for block in section.blocks -%}
+        <div class="feature-item" {{ block.shopify_attributes }}>
+          <div class="feature-title">{{ block.settings.title }}</div>
+          <p>{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{{ 'features.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Features",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pure Oil"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "100% concentrated, lasts 12-18 hours"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": { "title": "Pure Oil", "description": "100% concentrated, lasts 12-18 hours" }
+        },
+        {
+          "type": "feature",
+          "settings": { "title": "Ethically Sourced", "description": "Sustainable harvest, fair trade" }
+        },
+        {
+          "type": "feature",
+          "settings": { "title": "Free Samples", "description": "Two 1ml samples with every order" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

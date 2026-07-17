@@ -1,0 +1,1173 @@
+{% comment %}
+  ============================================================
+  SECTION: Featured Products Carousel - Premium (Animated)
+  ============================================================
+  Enhanced with:
+  - Word-by-word heading reveal
+  - Eyebrow letter-spacing expand
+  - View All underline draw-in
+  - Staggered slide entrances
+  - 3D tilt on hover with mouse-follow spotlight
+  - Shimmer light-sweep on hover
+  - Animated accent border lines on hover
+  - Per-element hover stagger cascade
+  - Product image hover lift + scale
+  - Scroll parallax on section head
+  - Animated divider line draw
+  - Navigation arrow slide-in
+  - Pagination dot stagger
+  - Background glow pulse
+  ============================================================
+{% endcomment %}
+
+{% liquid
+  assign heading = section.settings.heading | default: 'Featured Products'
+  assign subheading = section.settings.subheading | default: 'Discover our collection'
+  assign button_text = section.settings.button_text | default: 'Shop Now'
+  assign bg_color = section.settings.background_color | default: '#050505'
+  assign text_color = section.settings.text_color | default: '#ffffff'
+  assign accent_color = section.settings.accent_color | default: '#c6a56b'
+  
+  assign product_limit = section.settings.product_limit | default: 12
+  assign slides_per_view = section.settings.slides_per_view | default: 4
+  assign slides_per_view_tablet = section.settings.slides_per_view_tablet | default: 2.5
+  assign slides_per_view_mobile = section.settings.slides_per_view_mobile | default: 1.5
+  
+  assign autoplay = section.settings.autoplay | default: true
+  assign autoplay_speed = section.settings.autoplay_speed | default: 4000
+  assign show_navigation = section.settings.show_navigation | default: true
+  assign show_pagination = section.settings.show_pagination | default: true
+  assign loop_mode = section.settings.loop_mode | default: true
+  assign show_rating = section.settings.show_rating | default: false
+  assign show_view_all = section.settings.show_view_all | default: true
+  
+  assign collection = section.settings.collection
+  
+  if collection != blank
+    assign products = collection.products | limit: product_limit
+  else
+    assign products = collections.all.products | limit: product_limit
+  endif
+%}
+
+<style>
+  /* ============================================================
+     KEYFRAMES
+     ============================================================ */
+  @keyframes fc-letter-expand {
+    from { letter-spacing: 0.05em; opacity: 0; }
+    to { letter-spacing: 0.5em; opacity: 0.5; }
+  }
+  @keyframes fc-word-up {
+    from { transform: translateY(110%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fc-underline-draw {
+    from { opacity: 0; transform: scaleX(0); transform-origin: left; }
+    to { opacity: 0.6; transform: scaleX(1); transform-origin: left; }
+  }
+  @keyframes fc-divider-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes fc-slide-in {
+    from { opacity: 0; transform: translateY(50px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes fc-shimmer {
+    0% { transform: translateX(-120%) skewX(-15deg); }
+    100% { transform: translateX(220%) skewX(-15deg); }
+  }
+  @keyframes fc-line-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes fc-elem-rise {
+    from { transform: translateY(12px); opacity: 0.3; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fc-arrow-in-left {
+    from { opacity: 0; transform: translateY(-50%) translateX(-20px); }
+    to { opacity: 0.8; transform: translateY(-50%) translateX(0); }
+  }
+  @keyframes fc-arrow-in-right {
+    from { opacity: 0; transform: translateY(-50%) translateX(20px); }
+    to { opacity: 0.8; transform: translateY(-50%) translateX(0); }
+  }
+  @keyframes fc-dot-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fc-glow-drift {
+    0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-48%) scale(1.05); }
+  }
+
+  /* ============================================================
+     VARIABLES & BASE
+     ============================================================ */
+  #shopify-section-{{ section.id }} {
+    --bg: {{ bg_color }};
+    --text-primary: {{ text_color }};
+    --text-secondary: #bdbdbd;
+    --text-tertiary: #6f6f6f;
+    --gold: {{ accent_color }};
+    --gold-subtle: {{ accent_color }}20;
+    --gold-dim: {{ accent_color }}40;
+    --line-gold: {{ accent_color }}15;
+    --font-display: "Cormorant Garamond", serif;
+    --font-body: "Inter", sans-serif;
+    --container: 1200px;
+    --gutter: clamp(16px, 3vw, 48px);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #shopify-section-{{ section.id }}  {
+    background: var(--bg);
+    color: var(--text-primary);
+     position: relative;
+    overflow: hidden;
+  }
+
+  /* ============================================================
+     BACKGROUND EFFECTS (animated)
+     ============================================================ */
+  #shopify-section-{{ section.id }} .bg-glow {
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, {{ accent_color }}06, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    animation: fc-glow-drift 8s ease-in-out infinite;
+  }
+  #shopify-section-{{ section.id }}.is-scrolled .bg-glow {
+    opacity: 1;
+  }
+
+  /* ============================================================
+     DIVIDER LINE (animated draw from center)
+     ============================================================ */
+  #shopify-section-{{ section.id }} .divider-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-gold), transparent);
+    transform: scaleX(0);
+    z-index: 2;
+  }
+  #shopify-section-{{ section.id }}.is-visible .divider-line {
+    animation: fc-divider-draw 1s var(--ease) 0.05s forwards;
+  }
+
+  /* ============================================================
+     CONTAINER
+     ============================================================ */
+  #shopify-section-{{ section.id }} .container {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============================================================
+     SECTION HEAD — hidden initial state
+     ============================================================ */
+  #shopify-section-{{ section.id }} .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .section-head .eyebrow {
+    font-family: var(--font-body);
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    font-weight: 300;
+    display: block;
+    margin-bottom: 6px;
+    opacity: 0;
+  }
+
+  #shopify-section-{{ section.id }} .section-head h2 {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 5vw, 68px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  /* Word wrappers */
+  #shopify-section-{{ section.id }} .section-head h2 .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 2px;
+  }
+  #shopify-section-{{ section.id }} .section-head h2 .word-inner {
+    display: inline-block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  #shopify-section-{{ section.id }} .section-head h2 .word-inner.highlight {
+    color: var(--gold);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* View All */
+  #shopify-section-{{ section.id }} .section-head .view-all {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    font-weight: 300;
+    opacity: 0;
+    flex-shrink: 0;
+    position: relative;
+    text-decoration: none;
+    transition: color 0.4s var(--ease), border-color 0.4s var(--ease), opacity 0.4s var(--ease);
+  }
+  #shopify-section-{{ section.id }} .section-head .view-all::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease);
+  }
+  #shopify-section-{{ section.id }} .section-head .view-all:hover {
+    color: var(--gold);
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .section-head .view-all:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Animated states — applied via JS */
+  #shopify-section-{{ section.id }}.is-visible .section-head .eyebrow {
+    animation: fc-letter-expand 0.9s var(--ease) 0.15s forwards;
+  }
+  #shopify-section-{{ section.id }}.is-visible .section-head h2 .word-inner {
+    animation: fc-word-up 0.8s var(--ease) forwards;
+  }
+  #shopify-section-{{ section.id }}.is-visible .section-head .view-all {
+    animation: fc-underline-draw 0.6s var(--ease) 0.9s forwards;
+  }
+
+  @media (max-width: 700px) {
+    #shopify-section-{{ section.id }} .section-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+  }
+
+  /* ============================================================
+     SWIPER CONTAINER
+     ============================================================ */
+  #shopify-section-{{ section.id }} .swiper-wrapper-container {
+    position: relative;
+    overflow: hidden;
+    margin: 0 -6px;
+    perspective: 1200px;
+  }
+
+  #shopify-section-{{ section.id }} .swiper-container {
+    overflow: visible;
+    position: relative;
+    padding: 4px 2px 20px 2px;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .swiper-wrapper {
+    gap: 0;
+  }
+
+  #shopify-section-{{ section.id }} .swiper-slide {
+    width: auto;
+    flex-shrink: 0;
+    padding: 0 6px;
+  }
+
+  /* ============================================================
+     SLIDE INNER — the animated card wrapper
+     ============================================================ */
+  #shopify-section-{{ section.id }} .slide-inner {
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(0px);
+    transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+    will-change: transform;
+    opacity: 0;
+    background: transparent;
+  }
+
+  /* Staggered entrance */
+  #shopify-section-{{ section.id }} .slide-inner.is-entering {
+    animation: fc-slide-in 0.7s var(--ease) forwards;
+  }
+  #shopify-section-{{ section.id }} .slide-inner.is-entered {
+    opacity: 1;
+  }
+
+  /* 3D hover lift */
+  #shopify-section-{{ section.id }} .slide-inner:hover {
+    transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(12px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+  }
+
+  /* Mouse-follow spotlight overlay */
+  #shopify-section-{{ section.id }} .slide-inner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255,255,255,0.06), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease);
+    pointer-events: none;
+    z-index: 5;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover::after {
+    opacity: 1;
+  }
+
+  /* Override product card's internal reveal so it doesn't conflict */
+  #shopify-section-{{ section.id }} .slide-inner .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* ============================================================
+     SHIMMER SWEEP (on slide inner)
+     ============================================================ */
+  #shopify-section-{{ section.id }} .card-shimmer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 45%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 55%, transparent 70%);
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-120%) skewX(-15deg);
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover .card-shimmer {
+    animation: fc-shimmer 0.85s var(--ease) 0.12s forwards;
+  }
+
+  /* ============================================================
+     ANIMATED BORDER LINES (on slide inner)
+     ============================================================ */
+  #shopify-section-{{ section.id }} .card-border-top,
+  #shopify-section-{{ section.id }} .card-border-bottom {
+    position: absolute;
+    left: 0; width: 100%; height: 1px;
+    z-index: 6;
+    pointer-events: none;
+    transform: scaleX(0);
+  }
+  #shopify-section-{{ section.id }} .card-border-top {
+    top: 0;
+    background: linear-gradient(90deg, transparent, {{ accent_color }}40, transparent);
+  }
+  #shopify-section-{{ section.id }} .card-border-bottom {
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, {{ accent_color }}40, transparent);
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover .card-border-top {
+    animation: fc-line-draw 0.5s var(--ease) 0.04s forwards;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover .card-border-bottom {
+    animation: fc-line-draw 0.5s var(--ease) 0.14s forwards;
+  }
+
+  /* ============================================================
+     PRODUCT IMAGE HOVER (targets any img inside the card)
+     ============================================================ */
+  #shopify-section-{{ section.id }} .slide-inner img {
+    transition: transform 0.6s var(--ease), filter 0.6s var(--ease);
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover img {
+    transform: scale(1.06) translateY(-3px);
+    filter: brightness(1.06);
+  }
+
+  /* ============================================================
+     PER-ELEMENT HOVER STAGGER
+     Targets direct children of the rendered product card
+     ============================================================ */
+  #shopify-section-{{ section.id }} .slide-inner > * > * {
+    transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
+    transition-delay: 0s;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover > * > *:nth-child(1) {
+    transition-delay: 0.02s;
+    animation: fc-elem-rise 0.45s var(--ease) 0.02s both;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover > * > *:nth-child(2) {
+    transition-delay: 0.07s;
+    animation: fc-elem-rise 0.45s var(--ease) 0.07s both;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover > * > *:nth-child(3) {
+    transition-delay: 0.12s;
+    animation: fc-elem-rise 0.45s var(--ease) 0.12s both;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover > * > *:nth-child(4) {
+    transition-delay: 0.16s;
+    animation: fc-elem-rise 0.45s var(--ease) 0.16s both;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover > * > *:nth-child(5) {
+    transition-delay: 0.20s;
+    animation: fc-elem-rise 0.45s var(--ease) 0.20s both;
+  }
+
+  /* Also target deeper nested common elements for broader compatibility */
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="title"],
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="price"],
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="button"],
+  #shopify-section-{{ section.id }} .slide-inner:hover button,
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="rating"] {
+    animation: fc-elem-rise 0.45s var(--ease) both;
+  }
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="title"] { animation-delay: 0.08s; }
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="price"] { animation-delay: 0.14s; }
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="rating"] { animation-delay: 0.10s; }
+  #shopify-section-{{ section.id }} .slide-inner:hover [class*="button"],
+  #shopify-section-{{ section.id }} .slide-inner:hover button { animation-delay: 0.18s; }
+
+  /* ============================================================
+     NAVIGATION ARROWS (animated entrance + enhanced hover)
+     ============================================================ */
+  {% if show_navigation %}
+    #shopify-section-{{ section.id }} .swiper-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(5,5,5,0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.5s var(--ease);
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+    #shopify-section-{{ section.id }}.is-visible .swiper-nav-prev {
+      animation: fc-arrow-in-left 0.6s var(--ease) 1s forwards;
+    }
+    #shopify-section-{{ section.id }}.is-visible .swiper-nav-next {
+      animation: fc-arrow-in-right 0.6s var(--ease) 1.1s forwards;
+    }
+    #shopify-section-{{ section.id }} .swiper-nav:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--bg);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 0 24px {{ accent_color }}30;
+    }
+    #shopify-section-{{ section.id }} .swiper-nav.swiper-button-disabled {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    #shopify-section-{{ section.id }} .swiper-nav svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s var(--ease);
+    }
+    #shopify-section-{{ section.id }} .swiper-nav-prev:hover svg {
+      transform: translateX(-2px);
+    }
+    #shopify-section-{{ section.id }} .swiper-nav-next:hover svg {
+      transform: translateX(2px);
+    }
+    #shopify-section-{{ section.id }} .swiper-nav-prev { left: -6px; }
+    #shopify-section-{{ section.id }} .swiper-nav-next { right: -6px; }
+
+    @media (max-width: 900px) {
+      #shopify-section-{{ section.id }} .swiper-nav { display: none; }
+    }
+  {% endif %}
+
+  /* ============================================================
+     PAGINATION (staggered entrance + enhanced active)
+     ============================================================ */
+  {% if show_pagination %}
+    #shopify-section-{{ section.id }} .swiper-pagination {
+      position: relative;
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 1;
+    }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: background 0.5s var(--ease), width 0.5s var(--ease), border-radius 0.5s var(--ease), box-shadow 0.5s var(--ease);
+    }
+    #shopify-section-{{ section.id }}.is-visible .swiper-pagination-bullet {
+      animation: fc-dot-up 0.4s var(--ease) forwards;
+    }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet-active {
+      background: var(--gold);
+      width: 24px;
+      border-radius: 3px;
+      box-shadow: 0 0 10px {{ accent_color }}30;
+    }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet:hover {
+      background: var(--gold);
+      opacity: 0.6;
+    }
+  {% endif %}
+
+  /* ============================================================
+     EMPTY STATE
+     ============================================================ */
+  #shopify-section-{{ section.id }} .empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text-tertiary);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    font-weight: 300;
+    opacity: 0.5;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .swiper-slide { padding: 0 4px; }
+    #shopify-section-{{ section.id }} .swiper-pagination { margin-top: 24px; gap: 6px; }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet { width: 5px; height: 5px; }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet-active { width: 18px; }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .swiper-slide { padding: 0 3px; }
+    #shopify-section-{{ section.id }} .swiper-pagination { margin-top: 18px; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} *,
+    #shopify-section-{{ section.id }} *::before,
+    #shopify-section-{{ section.id }} *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    #shopify-section-{{ section.id }} .slide-inner { opacity: 1; transform: none; }
+    #shopify-section-{{ section.id }} .section-head .eyebrow { opacity: 0.5; }
+    #shopify-section-{{ section.id }} .section-head .view-all { opacity: 0.6; }
+    #shopify-section-{{ section.id }} .swiper-pagination-bullet { opacity: 1; transform: none; }
+    #shopify-section-{{ section.id }} .divider-line { transform: scaleX(1); }
+    #shopify-section-{{ section.id }} .bg-glow { opacity: 1; }
+  }
+
+  /* Disable 3D on touch */
+  @media (hover: none) {
+    #shopify-section-{{ section.id }} .slide-inner {
+      transform: none !important;
+    }
+    #shopify-section-{{ section.id }} .slide-inner:hover {
+      transform: none !important;
+      box-shadow: none;
+    }
+  }
+</style>
+
+<!-- ============================================================
+     MARKUP
+     ============================================================ -->
+<div class="featured-carousel">
+  {% if section.settings.show_background_effect %}
+    <div class="bg-glow" aria-hidden="true"></div>
+  {% endif %}
+
+  
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" id="fc-eyebrow-{{ section.id }}">{{ subheading }}</span>
+        <h2 id="fc-heading-{{ section.id }}">{{ heading }}</h2>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        {% if show_view_all %}
+          <a href="{% if collection != blank %}{{ collection.url }}{% else %}/collections/all{% endif %}" class="view-all" id="fc-viewall-{{ section.id }}">
+            {{ section.settings.view_all_text | default: 'View All' }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="swiper-wrapper-container">
+
+
+      <div class="swiper-container" 
+     id="swiper-{{ section.id }}"
+     role="group" 
+     aria-label="{{ section.settings.heading | default: 'Featured products carousel' | escape }}"
+     aria-roledescription="carousel">
+
+
+      
+        <div class="swiper-wrapper">
+          {% for product in products %}
+
+            <div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ products.size }}">
+
+ 
+
+
+              <div class="slide-inner" data-slide-index="{{ forloop.index0 }}">
+                {% render 'product-card',
+                  product: product,
+                  show_rating: show_rating,
+                  show_collection: true,
+                  show_quick_actions: true,
+                  show_tags: true,
+                  button_text: section.settings.product_button_text | default: 'Add to Cart',
+                  card_class: 'reveal'
+                %}
+                <span class="card-shimmer" aria-hidden="true"></span>
+                <span class="card-border-top" aria-hidden="true"></span>
+                <span class="card-border-bottom" aria-hidden="true"></span>
+              </div>
+            </div>
+          {% else %}
+            <div class="swiper-slide">
+              <div class="empty-state">
+                <p>No products found. Please select a collection or add products to your store.</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if show_navigation %}
+          <button class="swiper-nav swiper-nav-prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button class="swiper-nav swiper-nav-next" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if show_pagination %}
+      <div class="swiper-pagination" id="pagination-{{ section.id }}"></div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ============================================================
+     SWIPER JS
+     ============================================================ -->
+{{ 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' | stylesheet_tag }}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const section = document.getElementById('shopify-section-{{ section.id }}');
+    const sectionId = '{{ section.id }}';
+    const swiperEl = document.getElementById('swiper-' + sectionId);
+    const headingEl = document.getElementById('fc-heading-' + sectionId);
+    const productsCount = {{ products.size }};
+    let hasAnimated = false;
+    const enteredSlides = new Set();
+
+    /* ----------------------------------------------------------
+       Wrap heading words + highlight last word
+    ---------------------------------------------------------- */
+    function wrapHeadingWords(el) {
+      if (!el) return;
+      const text = el.textContent.trim();
+      const words = text.split(/\s+/);
+      el.innerHTML = words.map((w, i, arr) => {
+        const isLast = i === arr.length - 1;
+        const cls = isLast ? ' word-inner highlight' : ' word-inner';
+        const delay = 0.2 + i * 0.08;
+        return '<span class="word"><span class="' + cls + '" style="animation-delay:' + delay + 's">' + w + '</span></span> ';
+      }).join('');
+    }
+    wrapHeadingWords(headingEl);
+
+    /* ----------------------------------------------------------
+       Stagger pagination dot delays
+    ---------------------------------------------------------- */
+    const dots = section.querySelectorAll('.swiper-pagination-bullet');
+    dots.forEach((dot, i) => {
+      dot.style.animationDelay = (1.0 + i * 0.06) + 's';
+    });
+
+    /* ----------------------------------------------------------
+       IntersectionObserver — section entrance
+    ---------------------------------------------------------- */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+          section.classList.add('is-visible');
+
+          // Stagger slide-inner entrances for initially visible slides
+          const slides = section.querySelectorAll('.slide-inner');
+          slides.forEach((inner, i) => {
+            const slideRect = inner.getBoundingClientRect();
+            const viewH = window.innerHeight;
+            if (slideRect.left < viewH && slideRect.right > 0 && slideRect.top < viewH && slideRect.bottom > 0) {
+              setTimeout(() => {
+                inner.classList.add('is-entering');
+                inner.addEventListener('animationend', function onEnd(e) {
+                  if (e.animationName === 'fc-slide-in') {
+                    inner.classList.remove('is-entering');
+                    inner.classList.add('is-entered');
+                    inner.removeEventListener('animationend', onEnd);
+                  }
+                });
+                enteredSlides.add(i);
+              }, 300 + i * 100);
+            }
+          });
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(section);
+
+    // Separate scroll observer for bg glow + parallax
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          section.classList.add('is-scrolled');
+        } else {
+          section.classList.remove('is-scrolled');
+        }
+      });
+    }, { threshold: 0, rootMargin: '-10% 0px -10% 0px' });
+    scrollObserver.observe(section);
+
+    /* ----------------------------------------------------------
+       Scroll parallax on section head
+    ---------------------------------------------------------- */
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (!isTouch) {
+      let scrollTicking = false;
+      window.addEventListener('scroll', () => {
+        if (!scrollTicking) {
+          requestAnimationFrame(() => {
+            const rect = section.getBoundingClientRect();
+            const viewH = window.innerHeight;
+            if (rect.top < viewH && rect.bottom > 0) {
+              const progress = (viewH - rect.top) / (viewH + rect.height);
+              const shift = (progress - 0.5) * -15;
+              const headEl = section.querySelector('.section-head');
+              if (headEl) {
+                headEl.style.transform = 'translateY(' + shift + 'px)';
+                headEl.style.opacity = 0.6 + progress * 0.4;
+              }
+            }
+            scrollTicking = false;
+          });
+          scrollTicking = true;
+        }
+      }, { passive: true });
+    }
+
+    /* ----------------------------------------------------------
+       3D Tilt on slide-inner
+    ---------------------------------------------------------- */
+    if (!isTouch) {
+      section.querySelectorAll('.slide-inner').forEach(inner => {
+        inner.addEventListener('mousemove', (e) => {
+          const rect = inner.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const ry = ((cy - y) / cy) * 4;
+          const rx = ((x - cx) / cx) * 4;
+          inner.style.setProperty('--rx', rx + 'deg');
+          inner.style.setProperty('--ry', ry + 'deg');
+          inner.style.setProperty('--mx', ((x / rect.width) * 100) + '%');
+          inner.style.setProperty('--my', ((y / rect.height) * 100) + '%');
+        });
+
+        inner.addEventListener('mouseleave', () => {
+          inner.style.setProperty('--rx', '0deg');
+          inner.style.setProperty('--ry', '0deg');
+        });
+      });
+    }
+
+    /* ----------------------------------------------------------
+       Swiper Init
+    ---------------------------------------------------------- */
+    if (swiperEl && typeof Swiper !== 'undefined') {
+      const swiper = new Swiper(swiperEl, {
+        slidesPerView: 'auto',
+        spaceBetween: 0,
+        centeredSlides: false,
+        loop: {{ loop_mode }} && productsCount > {{ slides_per_view | times: 1.5 | round }} ? true : false,
+        speed: {{ section.settings.transition_speed | default: 800 }},
+        watchSlidesProgress: true,
+        autoplay: {{ autoplay }} ? {
+          delay: {{ autoplay_speed }},
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        } : false,
+
+        breakpoints: {
+          320: { slidesPerView: {{ slides_per_view_mobile }}, spaceBetween: 0 },
+          480: { slidesPerView: {{ slides_per_view_mobile | plus: 0.5 }}, spaceBetween: 0 },
+          768: { slidesPerView: {{ slides_per_view_tablet }}, spaceBetween: 0 },
+          1024: { slidesPerView: {{ slides_per_view }}, spaceBetween: 0 },
+          1280: { slidesPerView: {{ slides_per_view | plus: 0.5 }}, spaceBetween: 0 }
+        },
+
+        {% if show_navigation %}
+        navigation: {
+          nextEl: swiperEl.querySelector('.swiper-nav-next'),
+          prevEl: swiperEl.querySelector('.swiper-nav-prev'),
+        },
+        {% endif %}
+
+         
+
+        on: {
+          // Animate slides as they first become visible during sliding
+          slideChangeTransitionStart: function() {
+            this.slides.forEach((slide, i) => {
+              const inner = slide.querySelector('.slide-inner');
+              if (!inner) return;
+              if (!enteredSlides.has(i) && slide.classList.contains('swiper-slide-visible')) {
+                enteredSlides.add(i);
+                inner.classList.add('is-entering');
+                inner.addEventListener('animationend', function onEnd(e) {
+                  if (e.animationName === 'fc-slide-in') {
+                    inner.classList.remove('is-entering');
+                    inner.classList.add('is-entered');
+                    inner.removeEventListener('animationend', onEnd);
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+
+      {% if autoplay %}
+      // Autoplay pause/resume handled by Swiper's pauseOnMouseEnter
+      {% endif %}
+    }
+
+    // Fallback if Swiper fails
+    if (typeof Swiper === 'undefined') {
+      section.classList.add('is-visible', 'is-scrolled');
+      section.querySelectorAll('.slide-inner').forEach(inner => {
+        inner.classList.add('is-entered');
+        inner.style.opacity = '1';
+      });
+      section.querySelectorAll('.swiper-pagination-bullet').forEach(dot => {
+        dot.style.opacity = '1';
+        dot.style.transform = 'none';
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Featured Products",
+      "info": "Small text above the heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Discover our collection",
+      "info": "The last word will be highlighted in gold"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "text",
+      "id": "product_button_text",
+      "label": "Product Add to Cart Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show View All link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View All Text",
+      "default": "View All"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection to display",
+      "info": "Select a collection to pull products from"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of products",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "info": "Maximum products to display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show Product Rating",
+      "default": false,
+      "info": "Requires a review app integration"
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "range",
+      "id": "slides_per_view",
+      "label": "Slides per view (Desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 0.5,
+      "default": 4,
+      "info": "Number of slides visible on desktop"
+    },
+    {
+      "type": "range",
+      "id": "slides_per_view_tablet",
+      "label": "Slides per view (Tablet)",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "default": 2.5,
+      "info": "Number of slides visible on tablet"
+    },
+    {
+      "type": "range",
+      "id": "slides_per_view_mobile",
+      "label": "Slides per view (Mobile)",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.5,
+      "default": 1.5,
+      "info": "Number of slides visible on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_mode",
+      "label": "Enable Loop Mode",
+      "default": true,
+      "info": "Infinite scrolling carousel"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition Speed (ms)",
+      "min": 300,
+      "max": 1500,
+      "step": 100,
+      "default": 800,
+      "info": "Speed of slide transitions"
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay Speed (ms)",
+      "min": 2000,
+      "max": 9000,
+      "step": 500,
+      "default": 4000,
+      "info": "Time between slides in milliseconds"
+    },
+    {
+      "type": "header",
+      "content": "Navigation & Pagination"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show Navigation Arrows",
+      "default": true,
+      "info": "Previous/Next buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show Pagination Dots",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background_effect",
+      "label": "Show Background Glow Effect",
+      "default": true,
+      "info": "Adds a subtle ambient glow"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#050505"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#c6a56b"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products Carousel",
+      "settings": {
+        "subheading": "Featured Products",
+        "heading": "Discover our collection",
+        "button_text": "Shop Now",
+        "product_button_text": "Add to Cart",
+        "show_view_all": true,
+        "view_all_text": "View All",
+        "product_limit": 12,
+        "show_rating": false,
+        "slides_per_view": 4,
+        "slides_per_view_tablet": 2.5,
+        "slides_per_view_mobile": 1.5,
+        "loop_mode": true,
+        "transition_speed": 800,
+        "autoplay": true,
+        "autoplay_speed": 4000,
+        "show_navigation": true,
+        "show_pagination": true,
+        "show_background_effect": true,
+        "padding_top": 60,
+        "padding_bottom": 80,
+        "background_color": "#050505",
+        "text_color": "#ffffff",
+        "accent_color": "#c6a56b"
+      }
+    }
+  ]
+}
+{% endschema %}

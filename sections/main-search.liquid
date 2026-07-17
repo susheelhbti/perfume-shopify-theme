@@ -1,0 +1,70 @@
+<div class="page-wrapper search-page" {{ section.shopify_attributes }}>
+  {{ 'main-search.css' | asset_url | stylesheet_tag }}
+  <div style="text-align: left; margin-bottom: 1.5rem;">
+    <h1 class="legal-title">
+      {%- if search.performed -%}
+        Search results for &ldquo;{{ search.terms }}&rdquo;
+      {%- else -%}
+        Search
+      {%- endif -%}
+    </h1>
+  </div>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-page-form">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, pages, and more…" autocomplete="off">
+    <input type="hidden" name="type" value="product,page,article">
+    <button type="submit"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results_count == 0 -%}
+      <div class="cart-empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <p>No results found for &ldquo;{{ search.terms }}&rdquo;.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn">Browse All Products</a>
+      </div>
+    {%- else -%}
+      <p class="search-result-count">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %}</p>
+
+      <div class="catalog-grid" style="padding-top: 0;">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- assign has_non_products = false -%}
+      {%- for item in search.results -%}
+        {%- if item.object_type != 'product' -%}{%- assign has_non_products = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_non_products -%}
+        <div class="search-other-results">
+          <h3>Pages &amp; Articles</h3>
+          <ul class="footer-links" style="margin-top: 1rem; flex-direction: column;">
+            {%- for item in search.results -%}
+              {%- if item.object_type != 'product' -%}
+                <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="collection-pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&larr; Prev</a>{%- endif -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next &rarr;</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search results",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  <!-- Open Graph -->
+  {%- if product -%}
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="{{ product.title | escape }}">
+    <meta property="og:description" content="{{ product.description | strip_html | truncate: 200 | escape }}">
+    <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:price:amount" content="{{ product.selected_or_first_available_variant.price | divided_by: 100 }}">
+    <meta property="og:price:currency" content="{{ shop.currency }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ product.title | escape }}">
+    <meta name="twitter:description" content="{{ product.description | strip_html | truncate: 200 | escape }}">
+  {%- elsif article -%}
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ article.title | escape }}">
+    <meta property="og:description" content="{{ article.excerpt_or_content | strip_html | truncate: 200 | escape }}">
+    <meta property="og:image" content="{{ article.image | image_url: width: 1200 }}">
+    <meta name="twitter:card" content="summary_large_image">
+  {%- else -%}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page_title | escape }}">
+    <meta property="og:description" content="{{ page_description | default: shop.description | escape }}">
+    {%- if settings.favicon -%}
+      <meta property="og:image" content="{{ settings.favicon | image_url: width: 1200 }}">
+    {%- endif -%}
+  {%- endif -%}
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {{ content_for_header }}
+
+  <!-- Preload fonts -->
+  {%- if settings.font_heading -%}
+    <link rel="preload" href="{{ settings.font_heading | font_url }}" as="font" type="font/woff2" crossorigin>
+  {%- endif -%}
+  {%- if settings.font_body -%}
+    <link rel="preload" href="{{ settings.font_body | font_url }}" as="font" type="font/woff2" crossorigin>
+  {%- endif -%}
+
+  <!-- Theme variables -->
+  <style>
+    {{ settings.font_heading | font_face: font_display: 'swap' }}
+    {%- assign font_heading_italic = settings.font_heading | font_modify: 'style', 'italic' -%}
+    {%- if font_heading_italic -%}
+      {{ font_heading_italic | font_face: font_display: 'swap' }}
+    {%- endif -%}
+    {{ settings.font_body | font_face: font_display: 'swap' }}
+    {%- assign font_body_medium = settings.font_body | font_modify: 'weight', '500' -%}
+    {%- if font_body_medium -%}
+      {{ font_body_medium | font_face: font_display: 'swap' }}
+    {%- endif -%}
+
+    :root {
+      --bg: {{ settings.color_bg | default: '#050505' }};
+      --bg-raised: {{ settings.color_bg_raised | default: '#0b0b0b' }};
+      --text-primary: {{ settings.color_text_primary | default: '#ffffff' }};
+      --text-secondary: {{ settings.color_text_secondary | default: '#bdbdbd' }};
+      --text-tertiary: {{ settings.color_text_tertiary | default: '#6f6f6f' }};
+      --gold: {{ settings.color_gold | default: '#c6a56b' }};
+      --gold-dim: {{ settings.color_gold_dim | default: '#8a7350' }};
+      --container: {{ settings.page_width | default: 1280 }}px;
+      --font-heading-family: {{ settings.font_heading.family }}, serif;
+      --font-body-family: {{ settings.font_body.family }}, sans-serif;
+    }
+  </style>
+
+  <!-- ===== CSS: global first, then template-specific ===== -->
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'product-card.css' | asset_url | stylesheet_tag }}
+  {{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+  {{ 'header.css' | asset_url | stylesheet_tag }}
+  {{ 'footer.css' | asset_url | stylesheet_tag }}
+
+  {% if template.name == 'index' %}
+    {{ 'hero-banner.css' | asset_url | stylesheet_tag }}
+    {{ 'collections-grid.css' | asset_url | stylesheet_tag }}
+    {{ 'testimonials.css' | asset_url | stylesheet_tag }}
+    {{ 'features.css' | asset_url | stylesheet_tag }}
+    {{ 'discount-popup.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'product' %}
+    {{ 'main-product.css' | asset_url | stylesheet_tag }}
+    {{ 'product-recommendations.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'collection' %}
+    {{ 'main-collection.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'cart' %}
+    {{ 'main-cart.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'blog' %}
+    {{ 'main-blog.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'article' %}
+    {{ 'main-article.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == 'search' %}
+    {{ 'main-search.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% if template.name == '404' %}
+    {{ 'main-404.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    window.NOXR = window.NOXR || {};
+    window.NOXR.shopName = {{ shop.name | json }};
+    window.NOXR.routes = {
+      cart: {{ routes.cart_url | json }},
+      cartAdd: {{ routes.cart_add_url | json }}
+    };
+  </script>
+
+  <!-- tsparticles only (Alpine loads once, at the bottom, after alpine-components.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@3/tsparticles.engine.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@3/tsparticles.slim.min.js" defer></script>
+</head>
+<body class="template-{{ template.name | handle }}">
+
+  <a class="skip-to-content-link sr-only" href="#MainContent">Skip to content</a>
+
+  {% section 'header' %}
+
+  <main id="MainContent">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'social-links' %}
+  {% section 'footer' %}
+  {% section 'cart-drawer' %}
+
+  <!-- ===== JS: dependency order matters, theme.js must load last, Alpine loads once ===== -->
+  <script src="{{ 'utils.js' | asset_url }}" defer></script>
+  <script src="{{ 'svg.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-state.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-selection.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-page.js' | asset_url }}" defer></script>
+  <script src="{{ 'product-card.js' | asset_url }}" defer></script>
+  <script src="{{ 'product-detail.js' | asset_url }}" defer></script>
+  <script src="{{ 'header-nav.js' | asset_url }}" defer></script>
+  <script src="{{ 'hero-particles.js' | asset_url }}" defer></script>
+  <script src="{{ 'collections-tilt.js' | asset_url }}" defer></script>
+  <script src="{{ 'discount.js' | asset_url }}" defer></script>
+  <script src="{{ 'share.js' | asset_url }}" defer></script>
+  <script src="{{ 'accordion.js' | asset_url }}" defer></script>
+  <script src="{{ 'newsletter.js' | asset_url }}" defer></script>
+  <script src="{{ 'reveal-lazy.js' | asset_url }}" defer></script>
+  <script src="{{ 'alpine-components.js' | asset_url }}" defer></script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+</body>
+</html>

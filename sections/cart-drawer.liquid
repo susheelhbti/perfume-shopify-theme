@@ -1,0 +1,129 @@
+{%- liquid
+  assign threshold_cents = settings.free_shipping_threshold | times: 100
+  assign remaining_cents = threshold_cents | minus: cart.total_price
+  if remaining_cents < 0
+    assign remaining_cents = 0
+  endif
+  assign progress_pct = 100
+  if threshold_cents > 0
+    assign progress_pct = cart.total_price | times: 100 | divided_by: threshold_cents
+    if progress_pct > 100
+      assign progress_pct = 100
+    endif
+  endif
+-%}
+
+{{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+
+<div class="cart-drawer"
+     x-data="cartDrawer()"
+     :class="{ 'open': open }"
+     @open-cart-drawer.window="openDrawer()"
+     @close-cart-drawer.window="closeDrawer()"
+     @keyup.escape="closeDrawer()"
+     data-cart-drawer>
+
+  <div class="cart-drawer-overlay" @click="closeDrawer()"></div>
+
+  <div class="cart-drawer-panel" role="dialog" aria-label="Shopping bag" aria-modal="true">
+    <div class="cart-drawer-header">
+      <h2>Your Bag</h2>
+      <button type="button" class="cart-drawer-close" @click="closeDrawer()" aria-label="Close bag">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+
+    {% if settings.free_shipping_enable %}
+      <div class="cart-drawer-shipping-bar" x-show="cart.item_count > 0" data-shipping-bar data-threshold="{{ threshold_cents }}">
+        <p data-shipping-message>
+          {%- if remaining_cents > 0 -%}
+            You're {{ remaining_cents | money }} away from free shipping.
+          {%- else -%}
+            You've unlocked free shipping!
+          {%- endif -%}
+        </p>
+        <div class="cart-shipping-track">
+          <div class="cart-shipping-fill" data-shipping-fill style="width: {{ progress_pct }}%;"></div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cart-drawer-body">
+      <!-- Empty State -->
+      <div x-show="cart.item_count === 0" class="cart-drawer-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 7h12l-1 13H7L6 7z"/>
+          <path d="M9 7a3 3 0 0 1 6 0"/>
+        </svg>
+        <p>Your bag is empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn" @click="closeDrawer()">Explore the Collection</a>
+      </div>
+
+      <!-- Cart Items -->
+      <ul x-show="cart.item_count > 0" class="cart-drawer-items">
+        <template x-for="(item, index) in cart.items" :key="item.id">
+          <li class="cart-drawer-item">
+            <input type="checkbox"
+                   class="cart-drawer-item-select"
+                   :checked="isSelected(index + 1)"
+                   @change="toggleSelect(index + 1)"
+                   :aria-label="'Select ' + item.product.title">
+            <a :href="item.url" class="cart-drawer-item-image">
+              <img :src="item.image" :alt="item.product.title" loading="lazy">
+            </a>
+            <div class="cart-drawer-item-info">
+              <a :href="item.url" class="cart-drawer-item-name" x-text="item.product.title"></a>
+              <div x-show="item.variant.title != 'Default Title'" class="cart-drawer-item-variant" x-text="item.variant.title"></div>
+              <div class="cart-drawer-item-price" x-text="formatMoney(item.final_price)"></div>
+              <div class="cart-drawer-item-qty">
+                <button type="button" @click="updateQuantity(index + 1, Math.max(0, item.quantity - 1))">&minus;</button>
+                <input type="text" x-model="item.quantity" readonly>
+                <button type="button" @click="updateQuantity(index + 1, Math.min(99, item.quantity + 1))">+</button>
+              </div>
+              <button type="button" class="cart-drawer-item-wishlist" @click="moveToWishlist(index + 1, item.product_id)">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                Move to Wishlist
+              </button>
+            </div>
+            <button type="button" class="cart-drawer-item-remove" @click="removeItem(index + 1)" aria-label="Remove item">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 7h16M9 7V4h6v3m-8 0l1 13h8l1-13"/>
+              </svg>
+            </button>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div x-show="cart.item_count > 0" class="cart-drawer-footer">
+      <div class="cart-drawer-subtotal">
+        <span>Subtotal (all items)</span>
+        <span x-text="formatMoney(cart.total_price)"></span>
+      </div>
+      <div class="cart-drawer-subtotal cart-drawer-subtotal--selected">
+        <span><strong>Selected Subtotal</strong></span>
+        <span x-text="formatMoney(selectedSubtotal)"></span>
+      </div>
+      <p class="cart-drawer-note">Shipping &amp; taxes calculated at checkout for selected items.</p>
+
+      <div class="cart-drawer-footer-row">
+        <button type="button" class="btn btn-outline btn-block" @click="clearAll()">Clear All</button>
+      </div>
+
+      <button type="button" class="btn btn-gold btn-block" @click="checkoutSelected()">Checkout Selected</button>
+      <a :href="'{{ routes.cart_url }}/checkout'" class="btn btn-outline btn-block" style="margin-top: 0.6rem;" @click="closeDrawer()">Checkout All</a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": []
+}
+{% endschema %}

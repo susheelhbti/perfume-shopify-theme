@@ -1,0 +1,175 @@
+{%- liquid
+  assign cart_item_count = cart.item_count
+-%}
+
+<nav class="nav" 
+     x-data="{ scrolled: false }"
+     x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 40 }, { passive: true })"
+     :class="{ 'is-scrolled': scrolled }"
+     data-header>
+
+  <div class="nav-inner">
+    <a href="{{ routes.root_url }}" class="nav-logo">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="100" height="28" loading="eager">
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    <ul class="nav-center">
+      {%- for link in section.settings.main_menu.links -%}
+        <li class="{% if link.links != blank %}has-children{% endif %}">
+          <a href="{{ link.url }}" {% if link.current %}class="is-active"{% endif %}>{{ link.title }}</a>
+          {%- if link.links != blank -%}
+            <ul class="nav-dropdown">
+              {%- for childlink in link.links -%}
+                <li><a href="{{ childlink.url }}">{{ childlink.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="nav-right">
+      {%- if section.settings.show_search -%}
+        <form action="{{ routes.search_url }}" method="get" role="search" class="nav-search-form" data-search-form>
+          <input type="search" class="nav-search-input" name="q" placeholder="Search…" autocomplete="off" value="{{ search.terms | escape }}">
+          <input type="hidden" name="type" value="product">
+          <button type="button" aria-label="Search" data-search-trigger>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="7"/>
+              <path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </button>
+        </form>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" 
+         @click.prevent="$dispatch('open-cart-drawer')"
+         aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 7h12l-1 13H7L6 7z"/>
+          <path d="M9 7a3 3 0 0 1 6 0"/>
+        </svg>
+        <span class="cart-count" data-cart-count style="{% if cart_item_count == 0 %}display:none;{% endif %}">{{ cart_item_count }}</span>
+      </a>
+
+      <button class="nav-burger" 
+              x-data="{ open: false }"
+              @click="open = !open; $dispatch('toggle-mobile-nav')"
+              aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav Panel -->
+<div class="mobile-nav-panel" 
+     x-data="{ open: false }"
+     x-init="$watch('open', value => document.body.style.overflow = value ? 'hidden' : '')"
+     @toggle-mobile-nav.window="open = !open"
+     :class="{ 'open': open }"
+     data-mobile-nav-panel>
+  <button class="mobile-nav-close" @click="open = false" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </button>
+  {%- for link in section.settings.main_menu.links -%}
+    <a href="{{ link.url }}" @click="open = false">{{ link.title }}</a>
+  {%- endfor -%}
+</div>
+
+<!-- Mobile Tab Bar -->
+<nav class="mobile-tab-bar" aria-label="Mobile navigation">
+  <a href="{{ routes.root_url }}" class="{% if request.page_type == 'index' %}active{% endif %}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M3 11l9-8 9 8"/>
+      <path d="M5 10v10h14V10"/>
+    </svg>
+    <span>Home</span>
+  </a>
+  <a href="{{ section.settings.shop_tab_url | default: routes.all_products_collection_url }}" class="{% if request.page_type == 'collection' or request.page_type == 'product' %}active{% endif %}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M6 7h12l-1 13H7L6 7z"/>
+      <path d="M9 7a3 3 0 0 1 6 0"/>
+    </svg>
+    <span>Shop</span>
+  </a>
+  <a href="{{ section.settings.story_tab_url | default: '#story' }}" class="{% if request.page_type == 'page' %}active{% endif %}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+    <span>Story</span>
+  </a>
+  <a href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}#{% endif %}" class="{% if request.page_type == 'customers/account' %}active{% endif %}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+    </svg>
+    <span>Account</span>
+  </a>
+  <a href="{{ routes.cart_url }}" 
+     @click.prevent="$dispatch('open-cart-drawer')"
+     class="{% if request.page_type == 'cart' %}active{% endif %}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M6 7h12l-1 13H7L6 7z"/>
+      <path d="M9 7a3 3 0 0 1 6 0"/>
+    </svg>
+    <span class="tab-badge" data-cart-count style="{% if cart_item_count == 0 %}display:none;{% endif %}">{{ cart_item_count }}</span>
+    <span>Bag</span>
+  </a>
+</nav>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image",
+      "info": "Leave blank to show the text wordmark"
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search icon",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "shop_tab_url",
+      "label": "Mobile 'Shop' tab link",
+      "info": "Defaults to the All Products collection"
+    },
+    {
+      "type": "url",
+      "id": "story_tab_url",
+      "label": "Mobile 'Story' tab link",
+      "info": "Defaults to #story anchor on the homepage"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,164 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "search": {
+      "placeholder": "Buscar…",
+      "no_results": "No se encontraron resultados para \u201c{{ terms }}\u201d.",
+      "results_count": "{{ count }} resultados encontrados"
+    },
+    "newsletter": {
+      "success": "¡Gracias por unirte al Círculo Interior!",
+      "error_invalid_email": "Por favor introduce una dirección de correo válida.",
+      "error_generic": "Algo salió mal. Por favor intenta de nuevo."
+    },
+    "404": {
+      "title": "404",
+      "message": "La página que buscas se ha desvanecido como un aroma. Volvamos a la colección.",
+      "link": "Volver al Inicio"
+    },
+    "password_page": {
+      "login_form_heading": "Inicio de sesión del propietario",
+      "coming_soon": "Próximamente"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Añadir a la Bolsa",
+      "sold_out": "Agotado",
+      "unavailable": "No disponible",
+      "sale": "Oferta",
+      "bestseller": "Más vendido",
+      "new": "Nuevo",
+      "quantity": "Cantidad",
+      "size": "Tamaño",
+      "top_notes": "Notas de Salida",
+      "heart_notes": "Notas de Corazón",
+      "base_notes": "Notas de Fondo",
+      "shipping_returns": "Envíos y Devoluciones",
+      "care_instructions": "Instrucciones de Cuidado",
+      "you_may_also_like": "También te puede gustar",
+      "related_products": "También te puede gustar"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Tu Bolsa",
+      "empty": "Tu bolsa está vacía.",
+      "continue_shopping": "Seguir Comprando",
+      "subtotal": "Subtotal",
+      "checkout": "Pagar",
+      "shipping_taxes_note": "Envío e impuestos calculados al finalizar la compra.",
+      "free_shipping_remaining": "Estás a {{ amount }} de obtener envío gratis.",
+      "free_shipping_unlocked": "¡Has desbloqueado el envío gratis!",
+      "order_note": "Nota del Pedido",
+      "view_bag": "Ver Bolsa"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mi Cuenta",
+      "welcome": "Bienvenido, {{ name }}",
+      "order_history": "Historial de Pedidos",
+      "no_orders": "Aún no has realizado ningún pedido.",
+      "default_address": "Dirección Predeterminada",
+      "log_out": "Cerrar Sesión",
+      "addresses": "Direcciones"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar Sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "create_account": "Crear una cuenta",
+      "new_here": "¿Eres nuevo?",
+      "guest_continue": "Continuar como Invitado"
+    },
+    "register": {
+      "title": "Crear Cuenta",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Crear Cuenta",
+      "already_have_account": "¿Ya tienes una cuenta?",
+      "log_in": "Iniciar sesión"
+    },
+    "addresses": {
+      "title": "Direcciones",
+      "add_new": "Añadir Nueva Dirección",
+      "save": "Guardar Dirección",
+      "delete": "Eliminar",
+      "delete_confirm": "¿Eliminar esta dirección?",
+      "default_badge": "Predeterminada",
+      "no_addresses": "Aún no tienes direcciones guardadas."
+    },
+    "order": {
+      "title": "Detalles del Pedido",
+      "placed_on": "Realizado el {{ date }}",
+      "shipping_address": "Dirección de Envío",
+      "billing_address": "Dirección de Facturación",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "tax": "Impuesto",
+      "total": "Total",
+      "back_to_account": "Volver a la Cuenta"
+    },
+    "reset_password": {
+      "title": "Restablecer tu Contraseña",
+      "subtitle": "Introduce una nueva contraseña para {{ email }}.",
+      "new_password": "Nueva contraseña",
+      "confirm_password": "Confirmar nueva contraseña",
+      "submit": "Restablecer Contraseña"
+    }
+  },
+  "blogs": {
+    "article": {
+      "comments_count": "Comentarios ({{ count }})",
+      "comment_form_name": "Nombre",
+      "comment_form_email": "Correo electrónico",
+      "comment_form_body": "Tu comentario",
+      "comment_form_submit": "Publicar Comentario",
+      "comment_success": "¡Gracias por tu comentario!",
+      "by_author": "Por {{ author }}"
+    }
+  },
+  "discount_popup": {
+    "claim": "Reclamar",
+    "skip": "No, gracias, seguir navegando",
+    "thank_you": "Gracias",
+    "check_inbox": "Revisa tu correo para tu código de descuento."
+  },"general": {
+  "breadcrumbs": {
+    "home": "Inicio"
+  }
+},
+"products": {
+  "product": {
+    "description": "Descripción",
+    "share": "Compartir",
+    "save": "Ahorra {{ percentage }}%",
+    "link_copied": "Enlace copiado",
+    "shipping_returns_text": "Envío gratis en pedidos superiores a $150. Los artículos sin abrir pueden devolverse dentro de los 14 días posteriores a la entrega.",
+    "care_instructions_text": "Mantener en un lugar fresco y oscuro, lejos de la luz solar directa. Si se almacenan correctamente, los aceites puros pueden durar años.",
+    "unit_price": "Precio unitario",
+    "in_stock": "En stock",
+    "out_of_stock": "Agotado",
+    "only_few_left": "¡Solo quedan pocos!",
+    "reviews": "reseñas"
+  }
+},
+"cart": {
+  "general": {
+    "update": "Actualizar Carrito"
+  }
+}
+}

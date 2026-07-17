@@ -1,0 +1,76 @@
+<div class="legal-wrapper addresses-page" {{ section.shopify_attributes }}>
+  <span class="legal-eyebrow">My Account</span>
+  <h1 class="legal-title">Addresses</h1>
+
+  <a href="{{ routes.account_url }}" class="auth-link" style="margin-bottom: 1.5rem; display: inline-block;">&larr; Back to Account</a>
+
+  <button type="button" class="btn btn-gold" id="newAddressToggle" style="margin: 1rem 0;">Add New Address</button>
+
+  {%- form 'customer_address', customer.new_address, class: 'address-form' -%}
+    <div class="address-form-fields" id="newAddressForm" style="display:none;">
+      <label for="AddressFirstNameNew">First Name</label>
+      <input type="text" id="AddressFirstNameNew" name="address[first_name]" value="{{ form.first_name }}">
+      <label for="AddressLastNameNew">Last Name</label>
+      <input type="text" id="AddressLastNameNew" name="address[last_name]" value="{{ form.last_name }}">
+      <label for="AddressAddress1New">Address</label>
+      <input type="text" id="AddressAddress1New" name="address[address1]" value="{{ form.address1 }}">
+      <label for="AddressAddress2New">Apartment, suite, etc.</label>
+      <input type="text" id="AddressAddress2New" name="address[address2]" value="{{ form.address2 }}">
+      <label for="AddressCityNew">City</label>
+      <input type="text" id="AddressCityNew" name="address[city]" value="{{ form.city }}">
+      <label for="AddressProvinceNew">Province / State</label>
+      <input type="text" id="AddressProvinceNew" name="address[province]" value="{{ form.province }}">
+      <label for="AddressZipNew">Postal / Zip Code</label>
+      <input type="text" id="AddressZipNew" name="address[zip]" value="{{ form.zip }}">
+      <label for="AddressCountryNew">Country</label>
+      <input type="text" id="AddressCountryNew" name="address[country]" value="{{ form.country }}">
+      <label for="AddressPhoneNew">Phone</label>
+      <input type="tel" id="AddressPhoneNew" name="address[phone]" value="{{ form.phone }}">
+      <button type="submit" class="btn btn-gold">Save Address</button>
+    </div>
+  {%- endform -%}
+
+  {%- if customer.addresses.size > 0 -%}
+    <div class="address-grid">
+      {%- for address in customer.addresses -%}
+        <div class="address-card">
+          <p>
+            {{ address.first_name }} {{ address.last_name }}<br>
+            {{ address.address1 }}{% if address.address2 != blank %}, {{ address.address2 }}{% endif %}<br>
+            {{ address.city }}, {{ address.province_code }} {{ address.zip }}<br>
+            {{ address.country }}
+          </p>
+          {%- if address == customer.default_address -%}
+            <span class="eyebrow" style="display: inline-block; margin-top: 0.6rem; font-size: 10px;">Default</span>
+          {%- endif -%}
+          <div class="address-card-actions">
+            {%- form 'customer_address', address -%}
+              <button type="submit" name="_method" value="delete" class="auth-link" style="background:none;border:none;cursor:pointer;" onclick="return confirm('Delete this address?')">Delete</button>
+            {%- endform -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <p style="color: var(--text-tertiary); margin-top: 1.5rem;">You have no saved addresses yet.</p>
+  {%- endif -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var toggle = document.getElementById('newAddressToggle');
+    var form = document.getElementById('newAddressForm');
+    if (toggle && form) {
+      toggle.addEventListener('click', function () {
+        form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "settings": []
+}
+{% endschema %}
